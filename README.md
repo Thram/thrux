@@ -1,0 +1,2 @@
+# thrux
+Simple state management.
