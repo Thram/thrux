@@ -17,7 +17,13 @@ export const dispatch = (keyType, data) => {
   if (action) {
     const value     = action.map(data),
           nextValue = action.reducer(value);
-    middlewares.forEach((middleware) => middleware({prev: getState(key), payload: value, next: nextValue}));
+    middlewares.forEach((middleware) => middleware({
+      state  : key,
+      action : type,
+      prev   : getState(key),
+      payload: value,
+      next   : nextValue
+    }));
     setState(key, action.reducer(action.map(data)));
   }
 };
