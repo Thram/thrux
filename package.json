@@ -1,0 +1,24 @@
+{
+  "name": "thrux",
+  "version": "0.1.0",
+  "description": "Simple state management.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thram/thrux.git"
+  },
+  "keywords": [
+    "thrux",
+    "state",
+    "management"
+  ],
+  "author": "Thram <thramposo@gmail.com> (https://thram.github.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Thram/thrux/issues"
+  },
+  "homepage": "https://github.com/Thram/thrux#readme"
+}
