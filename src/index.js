@@ -6,7 +6,7 @@ import {getState, setState, resetState} from "./store";
 
 let dicts = {}, middlewares = [];
 
-export const register = (key, dict) => dicts[key] = dict;
+export const register = (newDicts) => Object.assign(dicts, newDicts);
 
 export const addMiddleware = (middleware) => middlewares.push(middleware);
 
