@@ -1,12 +1,13 @@
 /**
  * Created by thram on 16/01/17.
  */
+import assign from 'lodash/assign';
 import isEqual from 'lodash/isEqual';
 import {getState, setState, resetState} from "./store";
 
 let dicts = {}, middlewares = [];
 
-export const register = (newDicts) => Object.assign(dicts, newDicts);
+export const register = (newDicts) => assign(dicts, newDicts);
 
 export const addMiddleware = (middleware) => middlewares.push(middleware);
 

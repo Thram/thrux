@@ -10,6 +10,10 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */
 
 
+var _assign = require('lodash/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
 var _isEqual = require('lodash/isEqual');
 
 var _isEqual2 = _interopRequireDefault(_isEqual);
@@ -22,7 +26,7 @@ var dicts = {},
     middlewares = [];
 
 var register = exports.register = function register(newDicts) {
-  return Object.assign(dicts, newDicts);
+  return (0, _assign2.default)(dicts, newDicts);
 };
 
 var addMiddleware = exports.addMiddleware = function addMiddleware(middleware) {
