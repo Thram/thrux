@@ -7,6 +7,7 @@
     "commit": "git-cz ",
     "test": "jest --coverage --watch",
     "test:single": "jest --coverage",
+    "report-covarage": "cat ./coverage/lcov.info | codecov",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
@@ -26,6 +27,7 @@
   "homepage": "https://github.com/Thram/thrux#readme",
   "dependencies": {},
   "devDependencies": {
+    "codecov.io": "^0.1.6",
     "commitizen": "^2.9.5",
     "cz-conventional-changelog": "^1.2.0",
     "ghooks": "^2.0.0",
@@ -35,8 +37,18 @@
   "czConfig": {
     "path": "node_modules/cz-conventional-changelog"
   },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
+  },
   "config": {
-    "ghooks":{
+    "ghooks": {
       "pre-commit": "npm run test:single"
     }
   }
