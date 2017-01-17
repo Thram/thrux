@@ -3,9 +3,9 @@
  */
 
 function test() {
- console.log('This is a test function')
+  return 'Test!'
 }
 
 module.exports = {
-  test: test,
+  test,
 };

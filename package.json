@@ -1,14 +1,16 @@
 {
   "name": "thrux",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "description": "Simple state management.",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "commit": "git-cz ",
+    "test": "jest --coverage",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Thram/thrux.git"
+    "url": "https://github.com/Thram/thrux.git"
   },
   "keywords": [
     "thrux",
@@ -20,5 +22,15 @@
   "bugs": {
     "url": "https://github.com/Thram/thrux/issues"
   },
-  "homepage": "https://github.com/Thram/thrux#readme"
+  "homepage": "https://github.com/Thram/thrux#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "commitizen": "^2.9.5",
+    "cz-conventional-changelog": "^1.2.0",
+    "jest": "^18.1.0",
+    "semantic-release": "^6.3.2"
+  },
+  "czConfig":{
+    "path": "node_modules/cz-conventional-changelog"
+  }
 }
