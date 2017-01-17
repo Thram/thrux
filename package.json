@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "commit": "git-cz ",
-    "test": "jest --coverage",
+    "test": "jest --coverage --watch",
+    "test:single": "jest --coverage",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
@@ -27,10 +28,16 @@
   "devDependencies": {
     "commitizen": "^2.9.5",
     "cz-conventional-changelog": "^1.2.0",
+    "ghooks": "^2.0.0",
     "jest": "^18.1.0",
     "semantic-release": "^6.3.2"
   },
-  "czConfig":{
+  "czConfig": {
     "path": "node_modules/cz-conventional-changelog"
+  },
+  "config": {
+    "ghooks":{
+      "pre-commit": "npm run test:single"
+    }
   }
 }
