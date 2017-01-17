@@ -7,7 +7,7 @@
     "commit": "git-cz ",
     "test": "jest --coverage --watch",
     "test:single": "jest --coverage",
-    "report-covarage": "cat ./coverage/lcov.info | codecov",
+    "report-coverage": "cat ./coverage/lcov.info | codecov",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
