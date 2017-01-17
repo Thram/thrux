@@ -2,15 +2,19 @@
  * Created by thram on 16/01/17.
  */
 
+import {getState, setState} from "./store";
+
+setState('test', 'Test!');
+
 function test() {
-  return 'Test!'
+  return getState('test');
 }
 
 function test2() {
-  return 'Test 2!'
+  return getState();
 }
 
-module.exports = {
+export default {
   test,
   test2
 };
