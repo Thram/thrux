@@ -12,8 +12,8 @@
     "prebuild": "rimraf dist",
     "build": "npm-run-all --parallel build:*",
     "build:main": "babel --out-dir dist src",
-    "build:umd": "webpack --output-filename index.umd.js",
-    "build:umd.min": "webpack --output-filename index.umd.min.js -p"
+    "build:umd": "webpack --output-filename thrux.umd.js",
+    "build:umd.min": "webpack --output-filename thrux.umd.min.js -p"
   },
   "repository": {
     "type": "git",
@@ -30,7 +30,9 @@
     "url": "https://github.com/Thram/thrux/issues"
   },
   "homepage": "https://github.com/Thram/thrux#readme",
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^4.17.4"
+  },
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.21.0",

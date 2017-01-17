@@ -21,6 +21,14 @@ test('Dispatch "test:TEST_INIT" and read the new "test" state', () => {
   expect(state('test').data).toBe(1);
 });
 
+test('Dispatch "test:TEST_INIT" again and read the new "test" state', () => {
+  clearState();
+  dispatch('test:TEST_INIT', 0);
+  dispatch('test:TEST_INIT', 0);
+  dispatch('test:TEST_INIT', 1);
+  expect(state('test').data).toBe(2);
+});
+
 test('Dispatch "test2:TEST_INIT" and read the new "test" state', () => {
   clearState();
   dispatch('test2:TEST_INIT', 0);
