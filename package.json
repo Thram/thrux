@@ -4,7 +4,7 @@
   "description": "Simple state management.",
   "main": "dist/index.js",
   "scripts": {
-    "commit": "git-cz ",
+    "commit": "git add . && git-cz",
     "test": "jest --coverage --watch",
     "test:single": "jest --coverage",
     "report-coverage": "cat ./coverage/lcov.info | codecov",
@@ -50,9 +50,6 @@
     "umd": "^3.0.1",
     "webpack": "^1.14.0"
   },
-  "czConfig": {
-    "path": "./node_modules/cz-conventional-changelog"
-  },
   "babel": {
     "presets": [
       "es2015",
@@ -73,6 +70,9 @@
     }
   },
   "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    },
     "ghooks": {
       "pre-commit": "npm run test:single"
     }
