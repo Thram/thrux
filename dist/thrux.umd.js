@@ -98,11 +98,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    middlewares = [],
 	    observers = {};
 	
-	var createDict = exports.createDict = function createDict(map, reducer) {
+	var createDict = exports.createDict = function createDict(reducer) {
+	  var map = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (value) {
+	    return value;
+	  };
 	  var error = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (err) {
 	    return console.error(err);
 	  };
-	  return { map: map, reducer: reducer, error: error };
+	  return {
+	    map: map,
+	    reducer: reducer,
+	    error: error
+	  };
 	};
 	
 	var baseDict = { RESET: createDict(function () {
@@ -132,7 +139,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var processMiddlewares = function processMiddlewares(status) {
 	  return middlewares.forEach(function (middleware) {
-	    return middleware(status);
+	    return middleware((0, _assign2.default)({}, status));
 	  });
 	};
 	
@@ -176,7 +183,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (function () {
 	        var prev = (0, _store.getState)(state),
 	            payload = dict.map(data),
-	            nextValue = dict.reducer(payload);
+	            nextValue = dict.reducer(payload, prev);
 	
 	        nextValue && nextValue.then ? nextValue.then(function (next) {
 	          return processAction({ state: state, action: action, prev: prev, payload: payload, next: next });
