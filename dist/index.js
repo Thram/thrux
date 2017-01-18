@@ -3,12 +3,20 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.resetState = exports.state = exports.dispatch = exports.addMiddleware = exports.register = exports.observe = exports.createDict = undefined;
+exports.resetState = exports.state = exports.dispatch = exports.addMiddleware = exports.register = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }(); /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * Created by thram on 16/01/17.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */
 
+
+var _remove = require('lodash/remove');
+
+var _remove2 = _interopRequireDefault(_remove);
+
+var _clone = require('lodash/clone');
+
+var _clone2 = _interopRequireDefault(_clone);
 
 var _get = require('lodash/get');
 
@@ -34,12 +42,16 @@ var _isEqual = require('lodash/isEqual');
 
 var _isEqual2 = _interopRequireDefault(_isEqual);
 
+var _isArray = require('lodash/isArray');
+
+var _isArray2 = _interopRequireDefault(_isArray);
+
 var _store = require('./store');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var middlewares = [];
 var dicts = {},
-    middlewares = [],
     observers = {};
 
 var createDict = exports.createDict = function createDict(reducer) {
@@ -68,6 +80,12 @@ var addObserver = function addObserver(stateKey, funct) {
   }, observers[stateKey] || []);
 };
 
+var removeObserver = exports.removeObserver = function removeObserver(stateKey, funct) {
+  return (0, _remove2.default)(observers[stateKey], function (value) {
+    return value === funct;
+  });
+};
+
 var processObserver = function processObserver(observer, currentState) {
   return setTimeout(function () {
     return observer(currentState);
@@ -83,12 +101,16 @@ var processObservers = function processObservers(stateKey, currentState) {
 
 var processMiddlewares = function processMiddlewares(status) {
   return middlewares.forEach(function (middleware) {
-    return middleware((0, _assign2.default)({}, status));
+    return middleware(status);
   });
 };
 
 var observe = exports.observe = function observe(stateKey, funct) {
   return addObserver(stateKey, funct);
+};
+
+var clearObservers = exports.clearObservers = function clearObservers(stateKey) {
+  return observers[stateKey] = undefined;
 };
 
 var register = exports.register = function register(newDicts) {
@@ -98,7 +120,7 @@ var register = exports.register = function register(newDicts) {
 };
 
 var addMiddleware = exports.addMiddleware = function addMiddleware(middleware) {
-  return middlewares.push(middleware);
+  return (0, _isArray2.default)(middleware) ? middlewares = [].concat(middlewares, middleware) : middlewares.push(middleware);
 };
 
 var processAction = function processAction(_ref) {
@@ -109,9 +131,9 @@ var processAction = function processAction(_ref) {
       next = _ref.next;
 
   if (!(0, _isEqual2.default)(prev, next)) {
-    processMiddlewares({ state: state, action: action, prev: prev, payload: payload, next: next });
+    processMiddlewares({ state: state, action: action, prev: prev, payload: payload, next: (0, _clone2.default)(next) });
     (0, _store.setState)(state, next);
-    processObservers(state, next);
+    processObservers(state, (0, _clone2.default)(next));
   }
 };
 
@@ -127,7 +149,7 @@ var dispatch = exports.dispatch = function dispatch(keyType, data) {
       (function () {
         var prev = (0, _store.getState)(state),
             payload = dict.map(data),
-            nextValue = dict.reducer(payload, prev);
+            nextValue = dict.reducer(payload, (0, _clone2.default)(prev));
 
         nextValue && nextValue.then ? nextValue.then(function (next) {
           return processAction({ state: state, action: action, prev: prev, payload: payload, next: next });
