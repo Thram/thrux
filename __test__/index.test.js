@@ -2,7 +2,9 @@
  * Created by thram on 17/01/17.
  */
 
-import {register, addMiddleware, dispatch, state, clearState, createDict} from '../src';
+import {register, addMiddleware, dispatch, state, resetState, createDict, observe} from '../src';
+
+jest.useFakeTimers();
 
 register({
   test : {
@@ -15,38 +17,48 @@ register({
 
 addMiddleware((obj) => console.log(obj));
 
+observe('test', (state) => console.log('Observer test:', state));
+observe('test', (state) => console.log('Observer test #2:', state));
+observe('test', (state) => console.log('Observer test #3:', state));
+
 test('Dispatch "test:TEST_INIT" and read the new "test" state', () => {
-  clearState();
+  resetState();
   dispatch('test:TEST_INIT', 0);
+  jest.runAllTimers();
   expect(state('test').data).toBe(1);
 });
 
 test('Dispatch "test:TEST_INIT" again and read the new "test" state', () => {
-  clearState();
+  resetState();
   dispatch('test:TEST_INIT', 0);
   dispatch('test:TEST_INIT', 0);
   dispatch('test:TEST_INIT', 1);
+  jest.runAllTimers();
   expect(state('test').data).toBe(2);
 });
 
 test('Dispatch "test2:TEST_INIT" and read the new "test" state', () => {
-  clearState();
+  resetState();
   dispatch('test2:TEST_INIT', 0);
+  jest.runAllTimers();
   expect(state('test2').data).toBe(2);
 });
 
 test('Dispatch "test:TEST_INIT" and read the state object', () => {
   dispatch('test:TEST_INIT', 1);
+  jest.runAllTimers();
   expect(state()).toEqual({test: {data: 2}, test2: {data: 2}});
 });
 
 test('Dispatch "test:TEST_INIT_1" and expect undefined', () => {
-  clearState('test');
+  resetState('test');
   dispatch('test:TEST_INIT_1', 1);
+  jest.runAllTimers();
   expect(state('test')).toBeUndefined();
 });
 
 test('Clear "test" and expect undefined', () => {
-  clearState('test');
+  resetState('test');
+  jest.runAllTimers();
   expect(state('test')).toBeUndefined();
 });
