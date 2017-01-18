@@ -7,3 +7,5 @@
 [![MIT License](https://img.shields.io/npm/l/thrux.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 Simple state management.
+
+# TODO ADD Docs
