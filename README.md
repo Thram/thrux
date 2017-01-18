@@ -106,17 +106,51 @@ import {observe} from 'thrux';
 observe('user', (auth)=> console.log(auth.profile));
 ```
 
+#### removeObserver(stateKey, listener)
+
+Remove an observe listener.
+
+Param | Type | Description
+----- | ---- | -----------
+stateKey | String | String that represents the state
+listener | Function | Function that gets trigger when the state changes
+
+```javascript
+import {observe, removeObserver} from 'thrux';
+
+const logProfile = (auth) => console.log(auth.profile);
+
+observe('user', logProfile);
+
+removeObserver('user', logProfile); // logProfile won't trigger
+```
+
+#### clearObservers(stateKey)
+
+Remove all observe listeners.
+
+Param | Type | Description
+----- | ---- | -----------
+stateKey | String | String that represents the state
+
+```javascript
+import {clearObservers} from 'thrux';
+
+clearObservers('user');
+```
+
 #### addMiddleware(middleware)
 
 Add some middleware function. It won't modified the state.
 
 Param | Type | Description
 ----- | ---- | -----------
-middleware | Function | Function that gets trigger when the state changes with the following params: {state, action, prev, payload, next}
+middleware | Function *or* Array of Functions | Function(s) that trigger when the state changes with the following params: {state, action, prev, payload, next}
 
 ```javascript
 import {addMiddleware} from 'thrux';
 
 // Add logger
 addMiddleware(({state, action, prev, payload, next}) => console.log({state, action, prev, payload, next}));
+addMiddleware([({prev}) => console.log('prev', prev), ({next}) => console.log('next', next)]);
 ```
