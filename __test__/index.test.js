@@ -17,11 +17,11 @@ register({
   test3: {
     TEST_1: createDict((data, state) => new Promise((resolve, reject) => {
       const delay = Math.random() * 2000 + 1000;
-      delay > 2000 ? setTimeout(() => resolve({data: data + 3}), delay) : reject('Not enough time!')
+      setTimeout(() => reject('Async Error!'), delay)
     })),
     TEST_2: createDict((data, state) => new Promise((resolve, reject) => {
       const delay = Math.random() * 2000 + 1000;
-      delay > 2000 ? setTimeout(() => resolve({data: data + 3}), delay) : reject('Not enough time!')
+      setTimeout(() => resolve({data: data + 3}), delay)
     }), (err) => console.log('Another error handler', err))
   }
 });
