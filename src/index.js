@@ -1,6 +1,7 @@
 /**
  * Created by thram on 16/01/17.
  */
+import get from 'lodash/get';
 import set from 'lodash/set';
 import keys from 'lodash/keys';
 import reduce from 'lodash/reduce';
@@ -12,7 +13,7 @@ const dicts       = {},
       middlewares = [],
       observers   = {};
 
-export const createDict = (map, reducer) => ({map, reducer});
+export const createDict = (map, reducer, error = (err) => console.error(err)) => ({map, reducer, error});
 
 const baseDict = {RESET: createDict(() => undefined, () => undefined)};
 
@@ -37,24 +38,28 @@ export const register = (newDicts) => assign(dicts, reduce(newDicts, (result, di
 
 export const addMiddleware = (middleware) => middlewares.push(middleware);
 
+const processAction = ({state, action, prev, payload, next}) => {
+  if (!isEqual(prev, next)) {
+    processMiddlewares({state, action, prev, payload, next});
+    setState(state, next);
+    processObservers(state, next);
+  }
+};
+
 export const dispatch = (keyType, data) => {
-  const [key, type]  = keyType.split(':'),
-        dict         = dicts[key],
-        action       = dict && dict[type];
-  if (action) {
-    const prevValue = getState(key),
-          value     = action.map(data),
-          nextValue = action.reducer(value);
-    if (!isEqual(prevValue, nextValue)) {
-      processMiddlewares({
-        state  : key,
-        action : type,
-        prev   : prevValue,
-        payload: value,
-        next   : nextValue
-      });
-      setState(key, nextValue);
-      processObservers(key, nextValue);
+  const [state, action]  = keyType.split(':'),
+        dict             = get(dicts, `${state}.${action}`);
+  if (dict) {
+    try {
+      const prev      = getState(state),
+            payload   = dict.map(data),
+            nextValue = dict.reducer(payload);
+
+      nextValue && nextValue.then ?
+          nextValue.then((next) => processAction({state, action, prev, payload, next}), dict.error)
+          : processAction({state, action, prev, payload, next: nextValue});
+    } catch (e) {
+      dict.error(e)
     }
   }
 };
