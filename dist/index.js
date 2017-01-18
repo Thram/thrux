@@ -3,12 +3,28 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createDict = exports.clearState = exports.state = exports.dispatch = exports.addMiddleware = exports.register = undefined;
+exports.resetState = exports.state = exports.dispatch = exports.addMiddleware = exports.register = exports.observe = exports.createDict = undefined;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }(); /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * Created by thram on 16/01/17.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */
 
+
+var _get = require('lodash/get');
+
+var _get2 = _interopRequireDefault(_get);
+
+var _set = require('lodash/set');
+
+var _set2 = _interopRequireDefault(_set);
+
+var _keys = require('lodash/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _reduce = require('lodash/reduce');
+
+var _reduce2 = _interopRequireDefault(_reduce);
 
 var _assign = require('lodash/assign');
 
@@ -23,49 +39,103 @@ var _store = require('./store');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var dicts = {},
-    middlewares = [];
+    middlewares = [],
+    observers = {};
+
+var createDict = exports.createDict = function createDict(map, reducer) {
+  var error = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (err) {
+    return console.error(err);
+  };
+  return { map: map, reducer: reducer, error: error };
+};
+
+var baseDict = { RESET: createDict(function () {
+    return undefined;
+  }, function () {
+    return undefined;
+  }) };
+
+var addObserver = function addObserver(stateKey, funct) {
+  return observers[stateKey] = (0, _reduce2.default)([funct], function (result, value) {
+    return [].concat(result, [value]);
+  }, observers[stateKey] || []);
+};
+
+var processObserver = function processObserver(observer, currentState) {
+  return setTimeout(function () {
+    return observer(currentState);
+  }, 0);
+};
+
+var processObservers = function processObservers(stateKey, currentState) {
+  var stateObservers = observers[stateKey];
+  if (stateObservers && stateObservers.length > 0) stateObservers.forEach(function (observer) {
+    return processObserver(observer, currentState);
+  });
+};
+
+var processMiddlewares = function processMiddlewares(status) {
+  return middlewares.forEach(function (middleware) {
+    return middleware(status);
+  });
+};
+
+var observe = exports.observe = function observe(stateKey, funct) {
+  return addObserver(stateKey, funct);
+};
 
 var register = exports.register = function register(newDicts) {
-  return (0, _assign2.default)(dicts, newDicts);
+  return (0, _assign2.default)(dicts, (0, _reduce2.default)(newDicts, function (result, dict, stateKey) {
+    return (0, _set2.default)(result, stateKey, (0, _assign2.default)({}, baseDict, dict));
+  }, {}));
 };
 
 var addMiddleware = exports.addMiddleware = function addMiddleware(middleware) {
   return middlewares.push(middleware);
 };
 
+var processAction = function processAction(_ref) {
+  var state = _ref.state,
+      action = _ref.action,
+      prev = _ref.prev,
+      payload = _ref.payload,
+      next = _ref.next;
+
+  if (!(0, _isEqual2.default)(prev, next)) {
+    processMiddlewares({ state: state, action: action, prev: prev, payload: payload, next: next });
+    (0, _store.setState)(state, next);
+    processObservers(state, next);
+  }
+};
+
 var dispatch = exports.dispatch = function dispatch(keyType, data) {
   var _keyType$split = keyType.split(':'),
       _keyType$split2 = _slicedToArray(_keyType$split, 2),
-      key = _keyType$split2[0],
-      type = _keyType$split2[1],
-      dict = dicts[key],
-      action = dict && dict[type];
+      state = _keyType$split2[0],
+      action = _keyType$split2[1],
+      dict = (0, _get2.default)(dicts, state + '.' + action);
 
-  if (action) {
-    (function () {
-      var prevValue = (0, _store.getState)(key),
-          value = action.map(data),
-          nextValue = action.reducer(value);
-      if (!(0, _isEqual2.default)(prevValue, nextValue)) {
-        middlewares.forEach(function (middleware) {
-          return middleware({
-            state: key,
-            action: type,
-            prev: prevValue,
-            payload: value,
-            next: nextValue
-          });
-        });
-        (0, _store.setState)(key, nextValue);
-      }
-    })();
+  if (dict) {
+    try {
+      (function () {
+        var prev = (0, _store.getState)(state),
+            payload = dict.map(data),
+            nextValue = dict.reducer(payload);
+
+        nextValue && nextValue.then ? nextValue.then(function (next) {
+          return processAction({ state: state, action: action, prev: prev, payload: payload, next: next });
+        }, dict.error) : processAction({ state: state, action: action, prev: prev, payload: payload, next: nextValue });
+      })();
+    } catch (e) {
+      dict.error(e);
+    }
   }
 };
 
 var state = exports.state = _store.getState;
 
-var clearState = exports.clearState = _store.resetState;
-
-var createDict = exports.createDict = function createDict(map, reducer) {
-  return { map: map, reducer: reducer };
+var resetState = exports.resetState = function resetState(key) {
+  return key ? dispatch(key + ':RESET') : (0, _keys2.default)((0, _store.getState)()).forEach(function (k) {
+    return dispatch(k + ':RESET');
+  });
 };

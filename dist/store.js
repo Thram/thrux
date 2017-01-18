@@ -14,6 +14,3 @@ var getState = exports.getState = function getState(key) {
 var setState = exports.setState = function setState(key, value) {
   return store[key] = value;
 };
-var resetState = exports.resetState = function resetState(key) {
-  return key ? store[key] = undefined : store = {};
-};
