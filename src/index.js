@@ -1,17 +1,20 @@
 /**
  * Created by thram on 16/01/17.
  */
+import remove from 'lodash/remove';
+import clone from 'lodash/clone';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import keys from 'lodash/keys';
 import reduce from 'lodash/reduce';
 import assign from 'lodash/assign';
 import isEqual from 'lodash/isEqual';
+import isArray from 'lodash/isArray';
 import {getState, setState} from "./store";
 
-const dicts       = {},
-      middlewares = [],
-      observers   = {};
+let middlewares = [];
+const dicts     = {},
+    observers   = {};
 
 export const createDict = (reducer, map = (value) => value, error = (err) => console.error(err)) => ({
   map,
@@ -25,6 +28,8 @@ const addObserver = (stateKey, funct) => observers[stateKey] = reduce([funct],
     (result, value) => [].concat(result, [value]),
     observers[stateKey] || []);
 
+export const removeObserver = (stateKey, funct) => remove(observers[stateKey], (value) => value === funct);
+
 const processObserver = (observer, currentState) => setTimeout(() => observer(currentState), 0);
 
 const processObservers = (stateKey, currentState) => {
@@ -33,20 +38,24 @@ const processObservers = (stateKey, currentState) => {
     stateObservers.forEach((observer) => processObserver(observer, currentState));
 };
 
-const processMiddlewares = (status) => middlewares.forEach((middleware) => middleware(assign({}, status)));
+const processMiddlewares = (status) => middlewares.forEach((middleware) => middleware(status));
 
 export const observe = (stateKey, funct) => addObserver(stateKey, funct);
+
+export const clearObservers = (stateKey) => observers[stateKey] = undefined;
 
 export const register = (newDicts) => assign(dicts, reduce(newDicts, (result, dict, stateKey) =>
     set(result, stateKey, assign({}, baseDict, dict)), {}));
 
-export const addMiddleware = (middleware) => middlewares.push(middleware);
+export const addMiddleware = (middleware) => isArray(middleware) ?
+    middlewares = [].concat(middlewares, middleware) :
+    middlewares.push(middleware);
 
 const processAction = ({state, action, prev, payload, next}) => {
   if (!isEqual(prev, next)) {
-    processMiddlewares({state, action, prev, payload, next});
+    processMiddlewares({state, action, prev, payload, next: clone(next)});
     setState(state, next);
-    processObservers(state, next);
+    processObservers(state, clone(next));
   }
 };
 
@@ -57,7 +66,7 @@ export const dispatch = (keyType, data) => {
     try {
       const prev      = getState(state),
             payload   = dict.map(data),
-            nextValue = dict.reducer(payload, prev);
+            nextValue = dict.reducer(payload, clone(prev));
 
       nextValue && nextValue.then ?
           nextValue.then((next) => processAction({state, action, prev, payload, next}), dict.error)

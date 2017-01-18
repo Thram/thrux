@@ -35,8 +35,8 @@ error | Function | *(optional)* Error handler.
 import {createDict} from 'thrux';
 
 const counter = {
-  INCREASE: createDict((payload, state) => state++),
-  DECREASE: createDict((payload, state) => state--)
+  INCREASE: createDict((payload, state) => state + 1),
+  DECREASE: createDict((payload, state) => state - 1)
 }
 
 const user = {

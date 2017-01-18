@@ -2,7 +2,17 @@
  * Created by thram on 17/01/17.
  */
 
-import {register, addMiddleware, dispatch, state, resetState, createDict, observe} from '../src';
+import {
+  register,
+  addMiddleware,
+  dispatch,
+  state,
+  resetState,
+  createDict,
+  observe,
+  removeObserver,
+  clearObservers
+} from '../src';
 
 jest.useFakeTimers();
 
@@ -26,13 +36,31 @@ register({
   }
 });
 
-addMiddleware((obj) => console.log(obj));
+// Logger
+addMiddleware([({prev}) => console.log('console prev:', prev), ({next}) => console.log('console next:', next)]);
 
-observe('test', (state) => console.log('Observer test:', state));
-observe('test', (state) => console.log('Observer test #2:', state));
-observe('test', (state) => console.log('Observer test #3:', state));
+
+test('Test observers', () => {
+  clearObservers('test');
+  resetState();
+  observe('test', (state) => expect(state.data).toBe(1));
+  dispatch('test:TEST_1', 0);
+  jest.runAllTimers();
+});
+
+test('Test remove observer', () => {
+  clearObservers('test');
+  resetState();
+  const doNotConsole = (state) => console.log('Do Not console this');
+  observe('test', doNotConsole);
+  removeObserver('test', doNotConsole);
+  dispatch('test:TEST_1', 0);
+  expect(state('test').data).toBe(1);
+  jest.runAllTimers();
+});
 
 test('Dispatch "test:TEST_1" and read the new "test" state', () => {
+  clearObservers('test');
   resetState();
   dispatch('test:TEST_1', 0);
   jest.runAllTimers();
@@ -40,6 +68,7 @@ test('Dispatch "test:TEST_1" and read the new "test" state', () => {
 });
 
 test('Dispatch "test:TEST_1" again and read the new "test" state', () => {
+  clearObservers('test');
   resetState();
   dispatch('test:TEST_1', 0);
   dispatch('test:TEST_1', 0);
@@ -93,4 +122,13 @@ test('Clear "test" and expect undefined', () => {
   resetState('test');
   jest.runAllTimers();
   expect(state('test')).toBeUndefined();
+});
+
+test('Test that middleware does not affect the state', () => {
+  clearObservers('test');
+  resetState();
+  addMiddleware((obj) => obj.next && (obj.next.data = obj.next.data + 1));
+  dispatch('test:TEST_1', 0);
+  jest.runAllTimers();
+  expect(state('test').data).toBe(1);
 });
