@@ -8,7 +8,7 @@
 
 Simple state management inspired on Redux.
 
-**Motivation:** *I've been using Redux in several projects recently and don't get me wrong, I love it, but I found that at some point, if my app scales, my Redux files (actions/reducers/store) start to get messy and a bit annoying to handle. So inspired by the basic concepts of Redux, I decided to create this library where I've simplified that workflow and aim to have a better and easier file structure. 
+**Motivation:** *I've been using Redux in several projects recently and don't get me wrong, I love it, but I've found that at some point, if my app scales, my Redux files (actions/reducers/store) start to get messy and a bit annoying to handle. So inspired by the basic concepts of Redux, I decided to create this library where I've simplified that workflow and aim to have a better and easier file structure. 
 I hope you like it and any feedback or collaboration is more than welcome.*
 
 ## Install
