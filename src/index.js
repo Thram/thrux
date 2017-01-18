@@ -13,7 +13,11 @@ const dicts       = {},
       middlewares = [],
       observers   = {};
 
-export const createDict = (map, reducer, error = (err) => console.error(err)) => ({map, reducer, error});
+export const createDict = (reducer, map = (value) => value, error = (err) => console.error(err)) => ({
+  map,
+  reducer,
+  error
+});
 
 const baseDict = {RESET: createDict(() => undefined, () => undefined)};
 
@@ -29,7 +33,7 @@ const processObservers = (stateKey, currentState) => {
     stateObservers.forEach((observer) => processObserver(observer, currentState));
 };
 
-const processMiddlewares = (status) => middlewares.forEach((middleware) => middleware(status));
+const processMiddlewares = (status) => middlewares.forEach((middleware) => middleware(assign({}, status)));
 
 export const observe = (stateKey, funct) => addObserver(stateKey, funct);
 
@@ -53,7 +57,7 @@ export const dispatch = (keyType, data) => {
     try {
       const prev      = getState(state),
             payload   = dict.map(data),
-            nextValue = dict.reducer(payload);
+            nextValue = dict.reducer(payload, prev);
 
       nextValue && nextValue.then ?
           nextValue.then((next) => processAction({state, action, prev, payload, next}), dict.error)

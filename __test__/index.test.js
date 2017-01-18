@@ -8,23 +8,21 @@ jest.useFakeTimers();
 
 register({
   test : {
-    TEST_1: createDict((data) => ({data}), ({data}, state) => ({data: data + 1}))
+    TEST_1: createDict(({data}, state) => ({data: data + 1}), (data) => ({data}))
   },
   test2: {
-    TEST_1: createDict((data) => ({data}), ({data}, state) => ({data: data + 2})),
-    TEST_2: createDict((data) => ({data}), ({data}, state) => data.toString())
+    TEST_1: createDict((data, state) => ({data: data + 2})),
+    TEST_2: createDict((data, state) => data.toString())
   },
   test3: {
-    TEST_1: createDict((data) => ({data}),
-        ({data}, state) => new Promise((resolve, reject) => {
-          const delay = Math.random() * 2000 + 1000;
-          delay > 2000 ? setTimeout(() => resolve({data: data + 3}), delay) : reject('Not enough time!')
-        })),
-    TEST_2: createDict((data) => ({data}),
-        ({data}, state) => new Promise((resolve, reject) => {
-          const delay = Math.random() * 2000 + 1000;
-          delay > 2000 ? setTimeout(() => resolve({data: data + 3}), delay) : reject('Not enough time!')
-        }), (err)=> console.log('Another error handler', err))
+    TEST_1: createDict((data, state) => new Promise((resolve, reject) => {
+      const delay = Math.random() * 2000 + 1000;
+      delay > 2000 ? setTimeout(() => resolve({data: data + 3}), delay) : reject('Not enough time!')
+    })),
+    TEST_2: createDict((data, state) => new Promise((resolve, reject) => {
+      const delay = Math.random() * 2000 + 1000;
+      delay > 2000 ? setTimeout(() => resolve({data: data + 3}), delay) : reject('Not enough time!')
+    }), (err) => console.log('Another error handler', err))
   }
 });
 

@@ -6,6 +6,117 @@
 [![downloads](https://img.shields.io/npm/dm/thrux.svg?style=flat-square)](https://www.npmjs.com/package/thrux)
 [![MIT License](https://img.shields.io/npm/l/thrux.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-Simple state management.
+Simple state management inspired on Redux.
 
-# TODO ADD Docs
+**Motivation:** *I've been using Redux in several projects recently and don't get me wrong, I love it, but I found that at some point, if my app scales, my Redux files (actions/reducers/store) start to get messy and a bit annoying to handle. So inspired by the basic concepts of Redux, I decided to create this library where I've simplified that workflow and aim to have a better and easier file structure. 
+I hope you like it and any feedback or collaboration is more than welcome.*
+
+## Install
+
+```npm install thrux --save``` 
+
+or with yarn
+
+```yarn add thrux```
+
+## API
+
+#### createDict(reducer, map, error)
+
+Create the dictionary of methods that will be used for each action.
+
+Param | Type | Description
+----- | ---- | -----------
+reducer | Function | Update the current state. This could return an **Object** or a **Promise** and update the state async.
+map | Function | *(optional)* Map the value handle by the reducer.
+error | Function | *(optional)* Error handler.
+
+```javascript
+import {createDict} from 'thrux';
+
+const counter = {
+  INCREASE: createDict((payload, state) => state++),
+  DECREASE: createDict((payload, state) => state--)
+}
+
+const user = {
+  SIGN_IN: createDict((payload, state) => state++, ({user, pass}) => fetch('./sign_in_url', {user, pass}))
+}
+```
+
+#### register(dictionaries)
+
+Register your dictionaries.
+
+Param | Type | Description
+----- | ---- | -----------
+dictionaries | Object | List of states and their respective dictionaries
+
+```javascript
+import {register} from 'thrux';
+
+register({counter, user});
+```
+
+#### dispatch(stateAction, data)
+
+Dispatch the action that will update your state.
+
+Param | Type | Description
+----- | ---- | -----------
+stateAction | String: **'state:ACTION'** | String that represents the state and the action that you want to dispatch.
+data | Any | *(optional)* Whatever data your reducer is prepared to handle
+
+```javascript
+import {dispatch} from 'thrux';
+
+dispatch('counter:INCREASE');
+
+dispatch('user:SIGN_IN', {user:'Thram', pass:'password'});
+```
+
+#### state(stateKey)
+
+Retrieve the state value.
+
+Param | Type | Description
+----- | ---- | -----------
+stateKey | String | *(optional)* String that represents the state
+
+```javascript
+import {state} from 'thrux';
+
+const allStates = state();
+
+const userStates = state('user');
+```
+
+#### observe(stateKey, listener)
+
+Observe when the state changed.
+
+Param | Type | Description
+----- | ---- | -----------
+stateKey | String | String that represents the state
+listener | Function | Function that gets trigger when the state changes
+
+```javascript
+import {observe} from 'thrux';
+
+observe('user', (auth)=> console.log(auth.profile));
+```
+
+#### addMiddleware(middleware)
+
+Add some middleware function. It won't modified the state.
+
+Param | Type | Description
+----- | ---- | -----------
+middleware | Function | Function that gets trigger when the state changes with the following params: {state, action, prev, payload, next}
+
+```javascript
+import {addMiddleware} from 'thrux';
+
+// Add logger
+addMiddleware(({state, action, prev, payload, next}) => console.log({state, action, prev, payload, next}));
+```
