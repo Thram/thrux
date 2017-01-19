@@ -70,9 +70,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _remove2 = _interopRequireDefault(_remove);
 	
-	var _clone = __webpack_require__(122);
+	var _cloneDeep = __webpack_require__(122);
 	
-	var _clone2 = _interopRequireDefault(_clone);
+	var _cloneDeep2 = _interopRequireDefault(_cloneDeep);
 	
 	var _get = __webpack_require__(98);
 	
@@ -187,9 +187,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      next = _ref.next;
 	
 	  if (!(0, _isEqual2.default)(prev, next)) {
-	    processMiddlewares({ state: state, action: action, prev: prev, payload: payload, next: (0, _clone2.default)(next) });
+	    processMiddlewares({ state: state, action: action, prev: prev, payload: payload, next: (0, _cloneDeep2.default)(next) });
 	    (0, _store.setState)(state, next);
-	    processObservers(state, (0, _clone2.default)(next));
+	    processObservers(state, (0, _cloneDeep2.default)(next));
 	  }
 	};
 	
@@ -205,7 +205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      (function () {
 	        var prev = (0, _store.getState)(state),
 	            payload = dict.map(data),
-	            nextValue = dict.reducer(payload, (0, _clone2.default)(prev));
+	            nextValue = dict.reducer(payload, (0, _cloneDeep2.default)(prev));
 	
 	        nextValue && nextValue.then ? nextValue.then(function (next) {
 	          return processAction({ state: state, action: action, prev: prev, payload: payload, next: next });
@@ -4144,39 +4144,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	var baseClone = __webpack_require__(123);
 	
 	/** Used to compose bitmasks for cloning. */
-	var CLONE_SYMBOLS_FLAG = 4;
+	var CLONE_DEEP_FLAG = 1,
+	    CLONE_SYMBOLS_FLAG = 4;
 	
 	/**
-	 * Creates a shallow clone of `value`.
-	 *
-	 * **Note:** This method is loosely based on the
-	 * [structured clone algorithm](https://mdn.io/Structured_clone_algorithm)
-	 * and supports cloning arrays, array buffers, booleans, date objects, maps,
-	 * numbers, `Object` objects, regexes, sets, strings, symbols, and typed
-	 * arrays. The own enumerable properties of `arguments` objects are cloned
-	 * as plain objects. An empty object is returned for uncloneable values such
-	 * as error objects, functions, DOM nodes, and WeakMaps.
+	 * This method is like `_.clone` except that it recursively clones `value`.
 	 *
 	 * @static
 	 * @memberOf _
-	 * @since 0.1.0
+	 * @since 1.0.0
 	 * @category Lang
-	 * @param {*} value The value to clone.
-	 * @returns {*} Returns the cloned value.
-	 * @see _.cloneDeep
+	 * @param {*} value The value to recursively clone.
+	 * @returns {*} Returns the deep cloned value.
+	 * @see _.clone
 	 * @example
 	 *
 	 * var objects = [{ 'a': 1 }, { 'b': 2 }];
 	 *
-	 * var shallow = _.clone(objects);
-	 * console.log(shallow[0] === objects[0]);
-	 * // => true
+	 * var deep = _.cloneDeep(objects);
+	 * console.log(deep[0] === objects[0]);
+	 * // => false
 	 */
-	function clone(value) {
-	  return baseClone(value, CLONE_SYMBOLS_FLAG);
+	function cloneDeep(value) {
+	  return baseClone(value, CLONE_DEEP_FLAG | CLONE_SYMBOLS_FLAG);
 	}
 	
-	module.exports = clone;
+	module.exports = cloneDeep;
 
 
 /***/ },

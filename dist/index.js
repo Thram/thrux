@@ -14,9 +14,9 @@ var _remove = require('lodash/remove');
 
 var _remove2 = _interopRequireDefault(_remove);
 
-var _clone = require('lodash/clone');
+var _cloneDeep = require('lodash/cloneDeep');
 
-var _clone2 = _interopRequireDefault(_clone);
+var _cloneDeep2 = _interopRequireDefault(_cloneDeep);
 
 var _get = require('lodash/get');
 
@@ -131,9 +131,9 @@ var processAction = function processAction(_ref) {
       next = _ref.next;
 
   if (!(0, _isEqual2.default)(prev, next)) {
-    processMiddlewares({ state: state, action: action, prev: prev, payload: payload, next: (0, _clone2.default)(next) });
+    processMiddlewares({ state: state, action: action, prev: prev, payload: payload, next: (0, _cloneDeep2.default)(next) });
     (0, _store.setState)(state, next);
-    processObservers(state, (0, _clone2.default)(next));
+    processObservers(state, (0, _cloneDeep2.default)(next));
   }
 };
 
@@ -149,7 +149,7 @@ var dispatch = exports.dispatch = function dispatch(keyType, data) {
       (function () {
         var prev = (0, _store.getState)(state),
             payload = dict.map(data),
-            nextValue = dict.reducer(payload, (0, _clone2.default)(prev));
+            nextValue = dict.reducer(payload, (0, _cloneDeep2.default)(prev));
 
         nextValue && nextValue.then ? nextValue.then(function (next) {
           return processAction({ state: state, action: action, prev: prev, payload: payload, next: next });

@@ -2,7 +2,7 @@
  * Created by thram on 16/01/17.
  */
 import remove from 'lodash/remove';
-import clone from 'lodash/clone';
+import clone from 'lodash/cloneDeep';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import keys from 'lodash/keys';
