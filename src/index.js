@@ -79,4 +79,6 @@ export const dispatch = (keyType, data) => {
 
 export const state = getState;
 
-export const resetState = (key) => key ? dispatch(`${key}:RESET`) : keys(getState()).forEach((k) => dispatch(`${k}:RESET`));
+export const resetState = (key) => key ?
+    dispatch(`${key}:RESET`)
+    : keys(getState()).forEach((k) => dispatch(`${k}:RESET`));
