@@ -1,6 +1,6 @@
 {
   "name": "thrux",
-  "version": "1.0.0-development",
+  "version": "0.0.0-development",
   "description": "Simple state management.",
   "main": "dist/index.js",
   "scripts": {
