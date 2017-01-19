@@ -36,7 +36,6 @@ function add(task, state) {
 }
 function remove(task, state) {
   if (state && state.length > 0) {
-    console.log(task, state)
     var pos = getIndex(state, task);
     state.splice(pos, 1);
     return state;
@@ -75,7 +74,6 @@ thrux.register({
 
 
 thrux.observe('todos', function (state) {
-  console.log(state);
   $list.innerHTML = '';
   state.forEach(appendTaskItem);
 });

@@ -154,3 +154,10 @@ import {addMiddleware} from 'thrux';
 addMiddleware(({state, action, prev, payload, next}) => console.log({state, action, prev, payload, next}));
 addMiddleware([({prev}) => console.log('prev', prev), ({next}) => console.log('next', next)]);
 ```
+
+## Examples
+
+- [Counter](https://github.com/Thram/thrux/blob/master/examples/counter.js)
+- [Todo](https://github.com/Thram/thrux/blob/master/examples/todo.js)
+
+
