@@ -40,7 +40,7 @@ const counter = {
 }
 
 const user = {
-  SIGN_IN: createDict(({user, pass}) => fetch('./sign_in_url', {user, pass}))
+  SIGN_IN: createDict(({user, pass}) => fetch('./sign_in_url', {username, pass}), (user) => {username: user.name, pass: user.password})
 }
 ```
 
