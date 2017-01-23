@@ -77,6 +77,8 @@ dispatch('user:SIGN_IN', {user:'Thram', pass:'password'});
 
 #### state(stateKey)
 
+***returns:*** [Object]
+
 Retrieve the state value.
 
 Param | Type | Description
