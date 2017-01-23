@@ -163,3 +163,4 @@ addMiddleware([({prev}) => console.log('prev', prev), ({next}) => console.log('n
 - [Todo](https://github.com/Thram/thrux/blob/master/examples/todo.js)
 
 
+## Thanks!
