@@ -10,7 +10,6 @@
     "report-coverage": "cat ./coverage/lcov.info | codecov",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "prebuild": "rimraf dist",
-    "copy": "cp package.json dist/ && cp README.md dist/",
     "build": "npm-run-all --parallel build:*",
     "build:main": "babel --out-dir dist src",
     "build:umd": "webpack --output-filename thrux.umd.js",
