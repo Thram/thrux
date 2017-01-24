@@ -142,16 +142,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	};
 	
-	var processObserver = function processObserver(observer, currentState) {
+	var processObserver = function processObserver(observer, currentState, actionKey) {
 	  return setTimeout(function () {
-	    return observer(currentState);
+	    return observer(currentState, actionKey);
 	  }, 0);
 	};
 	
-	var processObservers = function processObservers(stateKey, currentState) {
+	var processObservers = function processObservers(stateKey, currentState, actionKey) {
 	  var stateObservers = observers[stateKey];
 	  if (stateObservers && stateObservers.length > 0) stateObservers.forEach(function (observer) {
-	    return processObserver(observer, currentState);
+	    return processObserver(observer, currentState, actionKey);
 	  });
 	};
 	
@@ -189,7 +189,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (!(0, _isEqual2.default)(prev, next)) {
 	    processMiddlewares({ state: state, action: action, prev: prev, payload: payload, next: (0, _cloneDeep2.default)(next) });
 	    (0, _store.setState)(state, next);
-	    processObservers(state, (0, _cloneDeep2.default)(next));
+	    processObservers(state, (0, _cloneDeep2.default)(next), action);
 	  }
 	};
 	
