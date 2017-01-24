@@ -12,14 +12,14 @@ node_js:
   - '6'
   - '4'
 before_script:
-  - npm run copy
-  - cd dist
   - npm prune
 script:
   - npm run test:single
   - npm run build
 after_success:
   - npm run report-coverage
+  - npm run copy
+  - cd dist
   - npm run semantic-release
 branches:
   except:
