@@ -2,7 +2,7 @@
   "name": "thrux",
   "version": "0.0.0-development",
   "description": "Simple state management.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "commit": "git add . && git-cz",
     "test": "jest --coverage --watch",
