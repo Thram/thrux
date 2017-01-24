@@ -51,11 +51,6 @@
     "umd": "^3.0.1",
     "webpack": "^1.14.0"
   },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
-  },
   "jest": {
     "transform": {
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
