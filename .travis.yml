@@ -18,8 +18,6 @@ script:
   - npm run build
 after_success:
   - npm run report-coverage
-  - npm run copy
-  - cd dist
   - npm run semantic-release
 branches:
   except:
