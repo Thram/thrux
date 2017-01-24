@@ -30,12 +30,12 @@ const addObserver = (stateKey, funct) => observers[stateKey] = reduce([funct],
 
 export const removeObserver = (stateKey, funct) => remove(observers[stateKey], (value) => value === funct);
 
-const processObserver = (observer, currentState) => setTimeout(() => observer(currentState), 0);
+const processObserver = (observer, currentState, actionKey) => setTimeout(() => observer(currentState, actionKey), 0);
 
-const processObservers = (stateKey, currentState) => {
+const processObservers = (stateKey, currentState, actionKey) => {
   const stateObservers = observers[stateKey];
   if (stateObservers && stateObservers.length > 0)
-    stateObservers.forEach((observer) => processObserver(observer, currentState));
+    stateObservers.forEach((observer) => processObserver(observer, currentState, actionKey));
 };
 
 const processMiddlewares = (status) => middlewares.forEach((middleware) => middleware(status));
@@ -55,7 +55,7 @@ const processAction = ({state, action, prev, payload, next}) => {
   if (!isEqual(prev, next)) {
     processMiddlewares({state, action, prev, payload, next: clone(next)});
     setState(state, next);
-    processObservers(state, clone(next));
+    processObservers(state, clone(next), action);
   }
 };
 

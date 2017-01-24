@@ -43,7 +43,10 @@ addMiddleware([({prev}) => console.log('console prev:', prev), ({next}) => conso
 test('Test observers', () => {
   clearObservers('test');
   resetState();
-  observe('test', (state) => expect(state.data).toBe(1));
+  observe('test', (state, actionKey) => {
+    console.log('Action', actionKey);
+    expect(state.data).toBe(1)
+  });
   dispatch('test:TEST_1', 0);
   jest.runAllTimers();
 });

@@ -105,7 +105,7 @@ listener | Function | Function that gets trigger when the state changes
 ```javascript
 import {observe} from 'thrux';
 
-observe('user', (auth)=> console.log(auth.profile));
+observe('user', (state, actionKey)=> console.log(actionKey, state.profile));
 ```
 
 #### removeObserver(stateKey, listener)
