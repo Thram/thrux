@@ -32,7 +32,17 @@ register({
     TEST_2: createDict((data, state) => new Promise((resolve, reject) => {
       const delay = Math.random() * 2000 + 1000;
       setTimeout(() => resolve({data: data + 3}), delay)
-    }), (err) => console.log('Another error handler', err))
+    }), (data) => ({data}), (err) => console.log('Another error handler', err)),
+    TEST_3: createDict((data, state) => new Promise((resolve, reject) => {
+      const delay = Math.random() * 2000 + 1000;
+      data += 1;
+      console.log('Resolve first promise', data);
+      setTimeout(() => resolve(new Promise((resolve, reject) => {
+        const delay = Math.random() * 2000 + 1000;
+        console.log('Resolve second promise', data);
+        setTimeout(() => resolve({data: data + 3}), delay)
+      })), delay)
+    }))
   }
 });
 
@@ -114,11 +124,18 @@ test('Dispatch "test3:TEST_1" and expect undefined', () => {
   observe('test3', (state) => expect(state).toBe(4));
 });
 
-test('Dispatch "test3:TEST_2" and expect undefined', () => {
+test('Dispatch "test3:TEST_2" and expect 4', () => {
   resetState('test3');
   dispatch('test3:TEST_2', 1);
   jest.runAllTimers();
   observe('test3', (state) => expect(state).toBe(4));
+});
+
+test('Dispatch "test3:TEST_3" and expect 4', () => {
+  resetState('test3');
+  dispatch('test3:TEST_3', 1);
+  jest.runAllTimers();
+  observe('test3', (state) => expect(state).toBe(5));
 });
 
 test('Clear "test" and expect undefined', () => {
