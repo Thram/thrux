@@ -204,12 +204,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    try {
 	      (function () {
 	        var prev = (0, _store.getState)(state),
-	            payload = dict.map(data),
-	            nextValue = dict.reducer(payload, (0, _cloneDeep2.default)(prev));
+	            payload = dict.map(data);
 	
-	        nextValue && nextValue.then ? nextValue.then(function (next) {
-	          return processAction({ state: state, action: action, prev: prev, payload: payload, next: next });
-	        }, dict.error) : processAction({ state: state, action: action, prev: prev, payload: payload, next: nextValue });
+	        var processNext = function processNext(nextValue) {
+	          return nextValue && nextValue.then ? nextValue.then(function (next) {
+	            return processNext(next);
+	          }, dict.error) : processAction({ state: state, action: action, prev: prev, payload: payload, next: nextValue });
+	        };
+	
+	        processNext(dict.reducer(payload, (0, _cloneDeep2.default)(prev)));
 	      })();
 	    } catch (e) {
 	      dict.error(e);

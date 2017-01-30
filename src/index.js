@@ -64,13 +64,14 @@ export const dispatch = (keyType, data) => {
         dict             = get(dicts, `${state}.${action}`);
   if (dict) {
     try {
-      const prev      = getState(state),
-            payload   = dict.map(data),
-            nextValue = dict.reducer(payload, clone(prev));
+      const prev    = getState(state),
+            payload = dict.map(data);
 
-      nextValue && nextValue.then ?
-          nextValue.then((next) => processAction({state, action, prev, payload, next}), dict.error)
+      const processNext = (nextValue) => nextValue && nextValue.then ?
+          nextValue.then(processNext, dict.error)
           : processAction({state, action, prev, payload, next: nextValue});
+
+      processNext(dict.reducer(payload, clone(prev)));
     } catch (e) {
       dict.error(e)
     }
