@@ -1,4 +1,5 @@
 # ![Thrux](https://raw.githubusercontent.com/Thram/thrux/master/thrux_logo_sm.png)
+*`(n.) Something that is the absolute core and driving force behind something.`*
 
 [![Travis build](https://img.shields.io/travis/Thram/thrux.svg?style=flat-square)](https://travis-ci.org/Thram/thrux)
 [![Codecov coverage](https://img.shields.io/codecov/c/gh/Thram/thrux.svg?style=flat-square)](https://codecov.io/gh/Thram/thrux)
