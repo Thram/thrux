@@ -6,6 +6,7 @@ import clone from 'lodash/cloneDeep';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import keys from 'lodash/keys';
+import map from 'lodash/map';
 import reduce from 'lodash/reduce';
 import assign from 'lodash/assign';
 import isEqual from 'lodash/isEqual';
@@ -22,7 +23,9 @@ export const createDict = (reducer, map = (value) => value, error = (err) => con
   error
 });
 
-const baseDict = {RESET: createDict(() => undefined, () => undefined)};
+const baseDict = {
+  INIT: createDict(() => undefined)
+};
 
 const addObserver = (stateKey, funct) => observers[stateKey] = reduce([funct],
     (result, value) => [].concat(result, [value]),
@@ -44,8 +47,11 @@ export const observe = (stateKey, funct) => addObserver(stateKey, funct);
 
 export const clearObservers = (stateKey) => observers[stateKey] = undefined;
 
-export const register = (newDicts) => assign(dicts, reduce(newDicts, (result, dict, stateKey) =>
-    set(result, stateKey, assign({}, baseDict, dict)), {}));
+export const register = (newDicts) => {
+  assign(dicts, reduce(newDicts, (result, dict, stateKey) =>
+      set(result, stateKey, assign({}, baseDict, dict)), {}));
+  keys(newDicts).forEach(initState);
+};
 
 export const addMiddleware = (middleware) => isArray(middleware) ?
     middlewares = [].concat(middlewares, middleware) :
@@ -59,7 +65,7 @@ const processAction = ({state, action, prev, payload, next}) => {
   }
 };
 
-export const dispatch = (keyType, data) => {
+const dispatchAction  = (keyType, data) => {
   const [state, action]  = keyType.split(':'),
         dict             = get(dicts, `${state}.${action}`);
   if (dict) {
@@ -77,9 +83,12 @@ export const dispatch = (keyType, data) => {
     }
   }
 };
+export const dispatch = (keyType, data) => isArray(keyType) ?
+    keyType.forEach((k) => dispatchAction(k, data))
+    : dispatchAction(keyType, data);
 
 export const state = getState;
 
-export const resetState = (key) => key ?
-    dispatch(`${key}:RESET`)
-    : keys(getState()).forEach((k) => dispatch(`${k}:RESET`));
+export const initState = (key) => key ?
+    dispatch(isArray(key) ? map(key, (k) => `${k}:INIT`) : `${key}:INIT`)
+    : keys(getState()).forEach((k) => dispatch(`${k}:INIT`));

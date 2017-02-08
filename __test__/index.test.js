@@ -7,7 +7,7 @@ import {
   addMiddleware,
   dispatch,
   state,
-  resetState,
+  initState,
   createDict,
   observe,
   removeObserver,
@@ -18,7 +18,9 @@ jest.useFakeTimers();
 
 register({
   test : {
-    TEST_1: createDict(({data}, state) => ({data: data + 1}), (data) => ({data}))
+    INIT  : createDict(() => ({data: 5})),
+    TEST_1: createDict(({data}, state) => ({data: data + 1}), (data) => ({data})),
+    TEST_2: createDict(({data}, state) => ({data: state.data + 1}), (data) => ({data}))
   },
   test2: {
     TEST_1: createDict((data, state) => ({data: data + 2})),
@@ -31,7 +33,7 @@ register({
     })),
     TEST_2: createDict((data, state) => new Promise((resolve, reject) => {
       const delay = Math.random() * 2000 + 1000;
-      setTimeout(() => resolve({data: data + 3}), delay)
+      setTimeout(() => resolve({data: data.data + 3}), delay)
     }), (data) => ({data}), (err) => console.log('Another error handler', err)),
     TEST_3: createDict((data, state) => new Promise((resolve, reject) => {
       const delay = Math.random() * 2000 + 1000;
@@ -47,12 +49,12 @@ register({
 });
 
 // Logger
-addMiddleware([({prev}) => console.log('console prev:', prev), ({next}) => console.log('console next:', next)]);
+addMiddleware([({state, action, prev}) => console.log(`${state}:${action} prev:`, prev), ({state, action, next}) => console.log(`${state}:${action} next:`, next)]);
 
 
 test('Test observers', () => {
   clearObservers('test');
-  resetState();
+  initState();
   observe('test', (state, actionKey) => {
     console.log('Action', actionKey);
     expect(state.data).toBe(1)
@@ -63,7 +65,7 @@ test('Test observers', () => {
 
 test('Test remove observer', () => {
   clearObservers('test');
-  resetState();
+  initState();
   const doNotConsole = (state) => console.log('Do Not console this');
   observe('test', doNotConsole);
   removeObserver('test', doNotConsole);
@@ -74,15 +76,33 @@ test('Test remove observer', () => {
 
 test('Dispatch "test:TEST_1" and read the new "test" state', () => {
   clearObservers('test');
-  resetState();
-  dispatch('test:TEST_1', 0);
+  initState();
+  dispatch('test:TEST_2');
   jest.runAllTimers();
-  expect(state('test').data).toBe(1);
+  expect(state('test').data).toBe(6);
 });
 
 test('Dispatch "test:TEST_1" again and read the new "test" state', () => {
   clearObservers('test');
-  resetState();
+  initState();
+  dispatch('test:TEST_1', 0);
+  dispatch('test:TEST_1', 0);
+  dispatch('test:TEST_1', 1);
+  jest.runAllTimers();
+  expect(state('test').data).toBe(2);
+});
+
+test('Dispatch "test:TEST_1" and "test:TEST_2" with same data', () => {
+  clearObservers('test');
+  initState();
+  dispatch(['test:TEST_1', 'test:TEST_2'], 3);
+  jest.runAllTimers();
+  expect(state('test').data).toBe(5);
+});
+
+test('Dispatch "test:TEST_1" again and read the new "test" state', () => {
+  clearObservers('test');
+  initState();
   dispatch('test:TEST_1', 0);
   dispatch('test:TEST_1', 0);
   dispatch('test:TEST_1', 1);
@@ -91,7 +111,7 @@ test('Dispatch "test:TEST_1" again and read the new "test" state', () => {
 });
 
 test('Dispatch "test2:TEST_1" and read the new "test" state', () => {
-  resetState();
+  initState();
   dispatch('test2:TEST_1', 0);
   jest.runAllTimers();
   expect(state('test2').data).toBe(2);
@@ -104,49 +124,54 @@ test('Dispatch "test:TEST_1" and read the state object', () => {
 });
 
 test('Dispatch "test2:TEST_2" and make it fail', () => {
-  resetState();
+  initState();
   dispatch('test2:TEST_2');
   jest.runAllTimers();
   expect(state('test2')).toBeUndefined();
 });
 
 test('Dispatch "test:TEST_1_1" and expect undefined', () => {
-  resetState('test');
+  initState('test');
   dispatch('test:TEST_1_1', 1);
   jest.runAllTimers();
-  expect(state('test')).toBeUndefined();
+  expect(state('test').data).toBe(5);
 });
 
 test('Dispatch "test3:TEST_1" and expect undefined', () => {
-  resetState('test3');
+  initState('test3');
   dispatch('test3:TEST_1', 1);
   jest.runAllTimers();
   observe('test3', (state) => expect(state).toBe(4));
 });
 
 test('Dispatch "test3:TEST_2" and expect 4', () => {
-  resetState('test3');
+  initState('test3');
   dispatch('test3:TEST_2', 1);
   jest.runAllTimers();
   observe('test3', (state) => expect(state).toBe(4));
 });
 
-test('Dispatch "test3:TEST_3" and expect 4', () => {
-  resetState('test3');
+test('Dispatch "test3:TEST_3" and expect 5', () => {
+  initState('test3');
   dispatch('test3:TEST_3', 1);
   jest.runAllTimers();
   observe('test3', (state) => expect(state).toBe(5));
 });
 
-test('Clear "test" and expect undefined', () => {
-  resetState('test');
+test('Ask for states "test" and "test2" and expect them', () => {
+  initState(['test', 'test2']);
+  expect(state(['test', 'test2'])).toEqual({test: {data: 5}, test2: undefined});
+});
+
+test('Reset "test" and expect {data:5}', () => {
+  initState('test');
   jest.runAllTimers();
-  expect(state('test')).toBeUndefined();
+  expect(state('test')).toEqual({data: 5});
 });
 
 test('Test that middleware does not affect the state', () => {
   clearObservers('test');
-  resetState();
+  initState(['test', 'test2']);
   addMiddleware((obj) => obj.next && (obj.next.data = obj.next.data + 1));
   dispatch('test:TEST_1', 0);
   jest.runAllTimers();

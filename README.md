@@ -45,6 +45,35 @@ const user = {
 }
 ```
 
+##### *Initialization*
+
+You can define a INIT dictionary with a function that sets the initial value of your state after register
+
+```javascript
+import {createDict} from 'thrux';
+
+const counter = {
+  INIT    : createDict(() => 1),
+  INCREASE: createDict((payload, state) => state + 1),
+  DECREASE: createDict((payload, state) => state - 1)
+}
+``` 
+
+#### initState(key)
+
+Triggers `INIT` action (a.k.a. initialize the state manually)  
+
+Param | Type | Description
+----- | ---- | -----------
+key | String [Array of Strings] | *(optional)* State(s) that want to initialize
+
+```javascript
+import {initState} from 'thrux';
+
+initState('counter');
+initState(['counter', 'user']);
+```
+
 #### register(dictionaries)
 
 Register your dictionaries.
@@ -65,13 +94,15 @@ Dispatch the action that will update your state.
 
 Param | Type | Description
 ----- | ---- | -----------
-stateAction | String: **'state:ACTION'** | String that represents the state and the action that you want to dispatch.
+stateAction | String: **'state:ACTION'** [Array of Strings] | String(s) that represents the state(s) and the action(s) that you want to dispatch.
 data | Any | *(optional)* Whatever data your reducer is prepared to handle
 
 ```javascript
 import {dispatch} from 'thrux';
 
 dispatch('counter:INCREASE');
+
+dispatch(['counter:INCREASE', 'counter2:INCREASE']);
 
 dispatch('user:SIGN_IN', {user:'Thram', pass:'password'});
 ```
@@ -84,12 +115,14 @@ Retrieve the state value.
 
 Param | Type | Description
 ----- | ---- | -----------
-stateKey | String | *(optional)* String that represents the state
+stateKey | String [Array of Strings] | *(optional)* String(s) that represents the state(s)
 
 ```javascript
 import {state} from 'thrux';
 
 const allStates = state();
+
+const someStates = state(['counter','user']);
 
 const userStates = state('user');
 ```
