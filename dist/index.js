@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.resetState = exports.state = exports.dispatch = exports.addMiddleware = exports.register = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
+exports.initState = exports.state = exports.dispatch = exports.addMiddleware = exports.register = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }(); /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * Created by thram on 16/01/17.
@@ -29,6 +29,10 @@ var _set2 = _interopRequireDefault(_set);
 var _keys = require('lodash/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
+
+var _map = require('lodash/map');
+
+var _map2 = _interopRequireDefault(_map);
 
 var _reduce = require('lodash/reduce');
 
@@ -68,11 +72,11 @@ var createDict = exports.createDict = function createDict(reducer) {
   };
 };
 
-var baseDict = { RESET: createDict(function () {
+var baseDict = {
+  INIT: createDict(function () {
     return undefined;
-  }, function () {
-    return undefined;
-  }) };
+  })
+};
 
 var addObserver = function addObserver(stateKey, funct) {
   return observers[stateKey] = (0, _reduce2.default)([funct], function (result, value) {
@@ -114,9 +118,10 @@ var clearObservers = exports.clearObservers = function clearObservers(stateKey) 
 };
 
 var register = exports.register = function register(newDicts) {
-  return (0, _assign2.default)(dicts, (0, _reduce2.default)(newDicts, function (result, dict, stateKey) {
+  (0, _assign2.default)(dicts, (0, _reduce2.default)(newDicts, function (result, dict, stateKey) {
     return (0, _set2.default)(result, stateKey, (0, _assign2.default)({}, baseDict, dict));
   }, {}));
+  (0, _keys2.default)(newDicts).forEach(initState);
 };
 
 var addMiddleware = exports.addMiddleware = function addMiddleware(middleware) {
@@ -137,7 +142,7 @@ var processAction = function processAction(_ref) {
   }
 };
 
-var dispatch = exports.dispatch = function dispatch(keyType, data) {
+var dispatchAction = function dispatchAction(keyType, data) {
   var _keyType$split = keyType.split(':'),
       _keyType$split2 = _slicedToArray(_keyType$split, 2),
       state = _keyType$split2[0],
@@ -161,11 +166,18 @@ var dispatch = exports.dispatch = function dispatch(keyType, data) {
     }
   }
 };
+var dispatch = exports.dispatch = function dispatch(keyType, data) {
+  return (0, _isArray2.default)(keyType) ? keyType.forEach(function (k) {
+    return dispatchAction(k, data);
+  }) : dispatchAction(keyType, data);
+};
 
 var state = exports.state = _store.getState;
 
-var resetState = exports.resetState = function resetState(key) {
-  return key ? dispatch(key + ':RESET') : (0, _keys2.default)((0, _store.getState)()).forEach(function (k) {
-    return dispatch(k + ':RESET');
+var initState = exports.initState = function initState(key) {
+  return key ? dispatch((0, _isArray2.default)(key) ? (0, _map2.default)(key, function (k) {
+    return k + ':INIT';
+  }) : key + ':INIT') : (0, _keys2.default)((0, _store.getState)()).forEach(function (k) {
+    return dispatch(k + ':INIT');
   });
 };
