@@ -151,9 +151,7 @@ var dispatch = exports.dispatch = function dispatch(keyType, data) {
             payload = dict.map(data);
 
         var processNext = function processNext(nextValue) {
-          return nextValue && nextValue.then ? nextValue.then(function (next) {
-            return processNext(next);
-          }, dict.error) : processAction({ state: state, action: action, prev: prev, payload: payload, next: nextValue });
+          return nextValue && nextValue.then ? nextValue.then(processNext, dict.error) : processAction({ state: state, action: action, prev: prev, payload: payload, next: nextValue });
         };
 
         processNext(dict.reducer(payload, (0, _cloneDeep2.default)(prev)));
