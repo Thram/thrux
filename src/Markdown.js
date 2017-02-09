@@ -7,18 +7,14 @@ import {Converter}  from 'showdown';
 const converter = new Converter();
 converter.setFlavor('github');
 
+const getMarkdown = (page) => require(`./pages/${ page || 'home' }.md`);
+
 
 export default class Markdown extends Component {
-
-  constructor(props) {
-    super(props);
-    this.markdown = require(`./pages/${ props.page || 'home' }.md`) ;
-  }
-
   render = () => (
       <div className="markdown-body"
-           dangerouslySetInnerHTML={{__html: converter.makeHtml(this.markdown)}}>
-
-      </div>
+           dangerouslySetInnerHTML={{
+             __html: converter.makeHtml(getMarkdown(this.props.page))
+           }}></div>
   )
 }

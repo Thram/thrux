@@ -2,39 +2,30 @@
  * Created by thram on 21/01/17.
  */
 import React, {Component} from "react";
-import {dispatch} from "thrux";
-import {connect} from "react-thrux";
 import Markdown from "./Markdown";
 
+const getPage = () => location.hash.replace('#', '');
 
 class App extends Component {
+  state = {
+    page: getPage()
+  };
 
-  render() {
-    return (
-        <div style={styles.container}>
-          <Markdown page={location.hash.replace('#', '')}/>
+  componentDidMount = () => window.onhashchange = () => this.setState({page: getPage()});
+
+  render = () => (
+      <div className="container">
+        <div className="side-bar">
+          <a href="#home">Home</a>
+          <a href="#test">Test</a>
+          <a href="#test2">Test 2</a>
         </div>
-    )
-  }
+        <div className="content">
+          <Markdown page={this.state.page}/>
+        </div>
+
+      </div>
+  )
 }
 
-const styles = {
-  container: {
-    fontFamily: "Helvetica, Arial, sans-serif"
-  },
-
-  clickArea: {
-    padding   : '20px',
-    width     : '200px',
-    height    : '200px',
-    border    : '1px solid black',
-    background: 'teal'
-  },
-  column   : {
-    padding: '20px',
-    display: 'inline-block',
-    float  : 'left'
-  }
-};
-
-export default connect('counter', App);
+export default App;
