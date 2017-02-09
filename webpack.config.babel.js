@@ -21,7 +21,8 @@ export default {
   module : {
     loaders: [
       {test: /\.js$/, loader: 'babel-loader'},
-      {test: /\.md$/, loader: 'raw-loader'}
+      {test: /\.md$/, loader: 'raw-loader'},
+      {test: /\.css$/, loaders: ['style-loader', 'css-loader']},
     ]
   },
   plugins: [

@@ -4,6 +4,7 @@
 import React, {Component} from "react";
 import {dispatch} from "thrux";
 import {connect} from "react-thrux";
+import Markdown from "./Markdown";
 
 
 class App extends Component {
@@ -11,7 +12,7 @@ class App extends Component {
   render() {
     return (
         <div style={styles.container}>
-          TEST!
+          <Markdown page={location.hash.replace('#', '')}/>
         </div>
     )
   }

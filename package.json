@@ -4,7 +4,7 @@
   "description": "Examples for react-thrux",
   "main": "index.js",
   "scripts": {
-    "build": "webpack -p",
+    "build": "webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Thram <thramposo@gmail.com> (https://thram.github.io/)",
@@ -22,10 +22,12 @@
     "webpack": "^2.2.1"
   },
   "dependencies": {
+    "css-loader": "^0.26.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-thrux": "^1.2.2",
     "showdown": "^1.6.4",
+    "style-loader": "^0.13.1",
     "thrux": "^2.4.1"
   }
 }
