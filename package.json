@@ -4,7 +4,8 @@
   "description": "Examples for react-thrux",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack -p",
+    "start": "webpack-dev-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Thram <thramposo@gmail.com> (https://thram.github.io/)",
@@ -18,16 +19,22 @@
     "babel-register": "^6.22.0",
     "html-webpack-plugin": "^2.28.0",
     "html-webpack-template": "^6.0.1",
+    "node-sass": "^4.5.0",
     "raw-loader": "^0.5.1",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.3.0"
   },
   "dependencies": {
     "css-loader": "^0.26.1",
+    "lodash": "^4.17.4",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-thrux": "^1.2.2",
+    "sass-loader": "^5.0.1",
     "showdown": "^1.6.4",
+    "showdown-highlight": "^1.0.0",
     "style-loader": "^0.13.1",
-    "thrux": "^2.4.1"
+    "thrux": "^2.4.1",
+    "thrux-logger": "^1.0.3"
   }
 }

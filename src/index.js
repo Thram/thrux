@@ -3,8 +3,9 @@
  */
 import React from "react";
 import ReactDOM from "react-dom";
-import "./registers";
-import App from  "./App";
-import "./app.css";
-
+import {addMiddleware} from "thrux";
+import logger from "thrux-logger";
+import App from "./components/App";
+import "./theme/default.sass";
+addMiddleware(logger);
 ReactDOM.render(<App />, document.getElementById('thrux-docs'));
