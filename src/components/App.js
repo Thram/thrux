@@ -12,7 +12,7 @@ class App extends Component {
   render = () => (
     <div className="container">
       <div className="side-bar" style={this.state.app.sideBar}>
-        <a href="/#" className="logo">
+        <a href="#" className="logo">
           <img src="https://raw.githubusercontent.com/Thram/thrux/master/thrux_logo_sm.png" alt="Thrux"/>
         </a>
         <Menu />

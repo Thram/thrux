@@ -1,19 +1,19 @@
 /**
  * Created by Thram on 14/02/17.
  */
-import {sortBy, find, omitBy} from "lodash";
+import {sortBy, find, omitBy, snakeCase} from "lodash";
 import {dispatch, register, createDict} from "thrux";
 
 const reqPages = require.context("../pages", true, /^(.*\.(md$))/);
 
 const getRoute = (file) => {
-  const path  = file.replace('./', '#').replace('.md', ''),
+  const path  = file.replace('.md', ''),
         group = path.split('/'),
         label = group.pop().replace('#', '');
 
   return {
     file: file.replace('./', ''),
-    path,
+    path:`#${snakeCase(path)}`,
     group,
     label
   };
