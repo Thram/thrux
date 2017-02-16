@@ -65,7 +65,7 @@ Triggers `INIT` action (a.k.a. initialize the state manually)
 
 Param | Type | Description
 ----- | ---- | -----------
-key | String [Array of Strings] | *(optional)* State(s) that want to initialize
+key | String *or* [Array of Strings] | *(optional)* State(s) that want to initialize
 
 ```javascript
 import {initState} from 'thrux';
@@ -94,7 +94,7 @@ Dispatch the action that will update your state.
 
 Param | Type | Description
 ----- | ---- | -----------
-stateAction | String: **'state:ACTION'** [Array of Strings] | String(s) that represents the state(s) and the action(s) that you want to dispatch.
+stateAction | String *or* [Array of Strings] | String(s) that represents the state(s) and the action(s) that you want to dispatch: **'state:ACTION'**
 data | Any | *(optional)* Whatever data your reducer is prepared to handle
 
 ```javascript
@@ -115,7 +115,7 @@ Retrieve the state value.
 
 Param | Type | Description
 ----- | ---- | -----------
-stateKey | String [Array of Strings] | *(optional)* String(s) that represents the state(s)
+stateKey | String *or* [Array of Strings] | *(optional)* String(s) that represents the state(s)
 
 ```javascript
 import {state} from 'thrux';
@@ -167,12 +167,13 @@ Remove all observe listeners.
 
 Param | Type | Description
 ----- | ---- | -----------
-stateKey | String | String that represents the state
+stateKey | String *or* [Array of Strings] | String that represents the state
 
 ```javascript
 import {clearObservers} from 'thrux';
 
 clearObservers('user');
+clearObservers(['counter1', 'counter2']);
 ```
 
 #### addMiddleware(middleware)
@@ -181,7 +182,7 @@ Add some middleware function. It won't modified the state.
 
 Param | Type | Description
 ----- | ---- | -----------
-middleware | Function *or* Array of Functions | Function(s) that trigger when the state changes with the following params: {state, action, prev, payload, next}
+middleware | Function *or* [Array of Functions] | Function(s) that trigger when the state changes with the following params: {state, action, prev, payload, next}
 
 ```javascript
 import {addMiddleware} from 'thrux';
