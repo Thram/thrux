@@ -6234,8 +6234,8 @@ var _store = __webpack_require__(65);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var middlewares = [];
-var dicts = {},
+var middlewares = [],
+    dicts = {},
     observers = {};
 
 var createDict = exports.createDict = function createDict(reducer) {
@@ -6354,7 +6354,12 @@ var dispatch = exports.dispatch = function dispatch(keyType, data) {
 
 var state = exports.state = _store.getState;
 
-var reset = exports.reset = _store.clearStore;
+var reset = exports.reset = function reset() {
+  middlewares = [];
+  dicts = {};
+  observers = {};
+  (0, _store.clearStore)();
+};
 
 var initState = exports.initState = function initState(key) {
   return key ? dispatch((0, _isArray2.default)(key) ? (0, _map2.default)(key, function (k) {
