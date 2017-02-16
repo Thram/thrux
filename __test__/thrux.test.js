@@ -41,6 +41,7 @@ test('Register state', (assert) => {
   assert.equal(actual, expected, 'State registered');
   assert.end();
 });
+
 test('Reset store', (assert) => {
   reset();
   const expected = {},
@@ -73,7 +74,7 @@ test('Get multiple states', (assert) => {
   dispatch(['counter:INCREASE', 'counter2:INCREASE']);
   const expected = {counter: 1, counter2: 2},
         actual   = state(['counter', 'counter2']);
-  assert.deepEqual(actual, expected, 'Action dispatched');
+  assert.deepEqual(actual, expected, 'States values correct');
   assert.end();
 });
 
@@ -119,22 +120,8 @@ test('Dispatch multiple actions', (assert) => {
   dispatch(['counter:INCREASE', 'counter2:INCREASE']);
   const expected = {counter: 1, counter2: 2},
         actual   = {counter: state('counter'), counter2: state('counter2')};
-  assert.deepEqual(actual, expected, 'Action dispatched');
+  assert.deepEqual(actual, expected, 'Actions dispatched');
   assert.end();
-});
-
-test('Dispatch an action that fails and catch the error', (assert) => {
-  reset();
-  const counter = {
-    INIT    : createDict(() => 0),
-    INCREASE: createDict((payload, state) => state + 1, ({value}) => value, (actual) => {
-      const expected = `Cannot read property 'value' of undefined`;
-      assert.equal(actual.message, expected, 'Action failed');
-      assert.end();
-    })
-  };
-  register({counter});
-  dispatch('counter:INCREASE');
 });
 
 test('Dispatch an action that fails without catching the error', (assert) => {
@@ -177,7 +164,36 @@ test('Dispatch an action with promise that fails', (assert) => {
   dispatch('user:SIGN_IN');
 });
 
-test('Initialize multiple states', (assert) => {
+test('Dispatch an action that fails and catch the error', (assert) => {
+  reset();
+  const counter = {
+    INIT    : createDict(() => 0),
+    INCREASE: createDict((payload, state) => state + 1, ({value}) => value, (actual) => {
+      const expected = `Cannot read property 'value' of undefined`;
+      assert.equal(actual.message, expected, 'Action failed');
+      assert.end();
+    })
+  };
+  register({counter});
+  dispatch('counter:INCREASE');
+});
+
+test('Initialize state manually', (assert) => {
+  reset();
+  const counter = {
+    INIT    : createDict(() => 0),
+    INCREASE: createDict((payload, state) => state + 1)
+  };
+  register({counter});
+  dispatch('counter:INCREASE');
+  initState('counter');
+  const expected = 0,
+        actual   = state('counter');
+  assert.equal(actual, expected, 'State initialized manually');
+  assert.end();
+});
+
+test('Initialize manually multiple states', (assert) => {
   reset();
   const counter  = {
     INIT    : createDict(() => 0),
@@ -196,7 +212,7 @@ test('Initialize multiple states', (assert) => {
   assert.end();
 });
 
-test('Initialize all states', (assert) => {
+test('Initialize manually all states', (assert) => {
   reset();
   const counter  = {
     INIT    : createDict(() => 0),
@@ -278,16 +294,6 @@ test('Clear multiple states observers', (assert) => {
     assert.pass('Observers not executed');
     assert.end();
   }, 200);
-});
-
-test('Initialize state manually', (assert) => {
-  reset();
-  dispatch('counter:INCREASE');
-  initState('counter');
-  const expected = 0,
-        actual   = state('counter');
-  assert.equal(actual, expected, 'State initialized manually');
-  assert.end();
 });
 
 test('Add middlewares', (assert) => {

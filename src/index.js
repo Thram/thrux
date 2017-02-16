@@ -13,8 +13,8 @@ import isEqual from 'lodash/isEqual';
 import isArray from 'lodash/isArray';
 import {getState, setState, clearStore} from "./store";
 
-let middlewares = [];
-const dicts     = {},
+let middlewares = [],
+    dicts       = {},
     observers   = {};
 
 export const createDict = (reducer, map = (value) => value, error = (err) => console.error(err)) => ({
@@ -89,7 +89,12 @@ export const dispatch = (keyType, data) => isArray(keyType) ?
 
 export const state = getState;
 
-export const reset = clearStore;
+export const reset = () => {
+  middlewares = [];
+  dicts       = {};
+  observers   = {};
+  clearStore();
+};
 
 export const initState = (key) => key ?
     dispatch(isArray(key) ? map(key, (k) => `${k}:INIT`) : `${key}:INIT`)
