@@ -5,9 +5,12 @@
   "main": "dist/index.js",
   "scripts": {
     "commit": "git add . && git-cz",
-    "test": "jest --coverage --watch",
-    "test:single": "jest --coverage",
+    "tape": "tape-watch -r babel-register __test__/thrux.test.js",
+    "cover": "nyc npm run test:single",
+    "test": "npm run tape -- -p | tap-spec --color",
+    "test:single": "npm run tape -- --once -p | tap-spec --color",
     "report-coverage": "cat ./coverage/lcov.info | codecov",
+    "report": "nyc report --reporter=lcov",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "prebuild": "rimraf dist",
     "build": "npm-run-all --parallel build:*",
@@ -34,42 +37,31 @@
     "lodash": "^4.17.4"
   },
   "devDependencies": {
-    "babel-cli": "^6.22.2",
-    "babel-core": "^6.22.1",
-    "babel-jest": "^18.0.0",
-    "babel-loader": "^6.2.10",
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.1",
     "babel-preset-es2015": "^6.22.0",
-    "babel-register": "^6.22.0",
+    "babel-register": "^6.23.0",
     "codecov.io": "^0.1.6",
     "commitizen": "^2.9.5",
     "cz-conventional-changelog": "^1.2.0",
     "ghooks": "^2.0.0",
-    "jest": "^18.1.0",
     "npm-run-all": "^4.0.1",
+    "nyc": "^10.1.2",
     "rimraf": "^2.5.4",
     "semantic-release": "^6.3.2",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.3",
+    "tape-watch": "^2.2.4",
     "umd": "^3.0.1",
     "webpack": "^2.2.1"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
-    },
-    "coverageThreshold": {
-      "global": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      }
-    }
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     },
     "ghooks": {
-      "pre-commit": "npm run test:single"
+      "pre-commit": "npm run cover"
     }
   }
 }

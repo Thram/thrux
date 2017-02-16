@@ -11,7 +11,7 @@ import reduce from 'lodash/reduce';
 import assign from 'lodash/assign';
 import isEqual from 'lodash/isEqual';
 import isArray from 'lodash/isArray';
-import {getState, setState} from "./store";
+import {getState, setState, clearStore} from "./store";
 
 let middlewares = [];
 const dicts     = {},
@@ -88,6 +88,8 @@ export const dispatch = (keyType, data) => isArray(keyType) ?
     : dispatchAction(keyType, data);
 
 export const state = getState;
+
+export const reset = clearStore;
 
 export const initState = (key) => key ?
     dispatch(isArray(key) ? map(key, (k) => `${k}:INIT`) : `${key}:INIT`)
