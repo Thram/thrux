@@ -3,6 +3,8 @@
 #### Dictionaries
 
 ```javascript
+import {register} from 'thrux';
+
 const state = {
     reducer: (payload, state)=> console.log('New State', payload), 
     map: (rawValue) => rawValue.data, 

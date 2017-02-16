@@ -2,18 +2,27 @@
  * Created by thram on 9/02/17.
  */
 import React, {Component} from "react";
-import {Converter} from "showdown";
-import showdownHighlight from "showdown-highlight";
+import Prism from "prismjs";
 import {getMarkdown} from "../modules/routes";
 
-const converter = new Converter({extensions: [showdownHighlight]});
-converter.setFlavor('github');
+import marked, {Renderer} from "marked";
+marked.setOptions({
+  renderer   : new Renderer(),
+  gfm        : true,
+  tables     : true,
+  breaks     : true,
+  pedantic   : true,
+  sanitize   : true,
+  smartLists : true,
+  smartypants: true,
+  highlight  : (code) => Prism.highlight(code, Prism.languages.js)
+});
 
 export default class Markdown extends Component {
   render = () => (
-    <div className="markdown-body"
-         dangerouslySetInnerHTML={{
-           __html: converter.makeHtml(getMarkdown(this.props.page))
-         }}></div>
+      <div className="markdown-body"
+           dangerouslySetInnerHTML={{
+             __html: marked(getMarkdown(this.props.page))
+           }}></div>
   )
 }

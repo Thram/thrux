@@ -348,119 +348,100 @@
       overflow: auto
       font-size: 85%
       line-height: 1.45
-      background-color: #f7f7f7
+      //background-color: #f7f7f7
       border-radius: 3px
-  pre
-    padding: 16px
+
+  code[class*="language-"]
+    color: #f8f8f2
+    background: none
+    text-shadow: 0 1px rgba(0, 0, 0, 0.3)
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace
+    text-align: left
+    white-space: pre
+    word-spacing: normal
+    word-break: normal
+    word-wrap: normal
+    line-height: 1.5
+    -moz-tab-size: 4
+    -o-tab-size: 4
+    tab-size: 4
+    -webkit-hyphens: none
+    -moz-hyphens: none
+    -ms-hyphens: none
+    hyphens: none
+
+  pre[class*="language-"]
+    color: #f8f8f2
+    background: none
+    text-shadow: 0 1px rgba(0, 0, 0, 0.3)
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace
+    text-align: left
+    white-space: pre
+    word-spacing: normal
+    word-break: normal
+    word-wrap: normal
+    line-height: 1.5
+    -moz-tab-size: 4
+    -o-tab-size: 4
+    tab-size: 4
+    -webkit-hyphens: none
+    -moz-hyphens: none
+    -ms-hyphens: none
+    hyphens: none
+    padding: 1em
+    margin: .5em 0
     overflow: auto
-    font-size: 85%
-    line-height: 1.45
-    background-color: #f7f7f7
-    border-radius: 3px
-    code
-      display: inline
-      max-width: auto
-      padding: 0
-      margin: 0
-      overflow: visible
-      line-height: inherit
-      word-wrap: normal
-      background-color: transparent
-      border: 0
-      &::before, &::after
-        content: normal
-  .pl-0
-    padding-left: 0 !important
-  .pl-1
-    padding-left: 3px !important
-  .pl-2
-    padding-left: 6px !important
-  .pl-3
-    padding-left: 12px !important
-  .pl-4
-    padding-left: 24px !important
-  .pl-5
-    padding-left: 36px !important
-  .pl-6
-    padding-left: 48px !important
-  .full-commit .btn-outline:not(:disabled):hover
-    color: #4078c0
-    border: 1px solid #4078c0
-  kbd
-    display: inline-block
-    padding: 3px 5px
-    font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace
-    line-height: 10px
-    color: #555
-    vertical-align: middle
-    background-color: #fcfcfc
-    border: solid 1px #ccc
-    border-bottom-color: #bbb
-    border-radius: 3px
-    box-shadow: inset 0 -1px 0 #bbb
-  \:checked + .radio-label
-    position: relative
-    z-index: 1
-    border-color: #4078c0
-  .task-list-item
-    list-style-type: none
-    + .task-list-item
-      margin-top: 3px
-    input
-      margin: 0 0.2em 0.25em -1.6em
-      vertical-align: middle
-  hr
-    border-bottom-color: #eee
+    border-radius: 0.3em
 
-  /* Tomorrow Night Theme
-  /* http://jmblog.github.com/color-themes-for-google-code-highlightjs
-  /* Original theme - https://github.com/chriskempson/tomorrow-theme
-  /* http://jmblog.github.com/color-themes-for-google-code-highlightjs
+  /* Code blocks
 
-  /* Tomorrow Comment
+  \:not(pre) > code[class*="language-"], pre[class*="language-"]
+    background: #272822
 
-  .hljs-comment, .hljs-quote
-    color: #969896
+  /* Inline code
 
-  /* Tomorrow Red
+  \:not(pre) > code[class*="language-"]
+    padding: .1em
+    border-radius: .3em
+    white-space: normal
 
-  .hljs-variable, .hljs-template-variable, .hljs-tag, .hljs-name, .hljs-selector-id, .hljs-selector-class, .hljs-regexp, .hljs-deletion
-    color: #cc6666
+  .token
+    &.comment, &.prolog, &.doctype, &.cdata
+      color: slategray
+    &.punctuation
+      color: #f8f8f2
 
-  /* Tomorrow Orange
+  .namespace
+    opacity: .7
 
-  .hljs-number, .hljs-built_in, .hljs-builtin-name, .hljs-literal, .hljs-type, .hljs-params, .hljs-meta, .hljs-link
-    color: #de935f
+  .token
+    &.property, &.tag, &.constant, &.symbol, &.deleted
+      color: #f92672
+    &.boolean, &.number
+      color: #ae81ff
+    &.selector, &.attr-name, &.string, &.char, &.builtin, &.inserted
+      color: #a6e22e
+    &.operator, &.entity, &.url
+      color: #f8f8f2
 
-  /* Tomorrow Yellow
+  .language-css .token.string, .style .token.string
+    color: #f8f8f2
 
-  .hljs-attribute
-    color: #f0c674
-
-  /* Tomorrow Green
-
-  .hljs-string, .hljs-symbol, .hljs-bullet, .hljs-addition
-    color: #b5bd68
-
-  /* Tomorrow Blue
-
-  .hljs-title, .hljs-section
-    color: #81a2be
-
-  /* Tomorrow Purple
-
-  .hljs-keyword, .hljs-selector-tag
-    color: #b294bb
-
-  .hljs
-    display: block
-    overflow-x: auto
-    background: #1d1f21
-    color: #c5c8c6
-    padding: 0.5em
-
-  .hljs-emphasis
-    font-style: italic
-
-  .hljs-strong
-    font-weight: bold
+  .token
+    &.variable
+      color: #f8f8f2
+    &.atrule, &.attr-value, &.function
+      color: #e6db74
+    &.keyword
+      color: #66d9ef
+    &.regex
+      color: #fd971f
+    &.important
+      color: #fd971f
+      font-weight: bold
+    &.bold
+      font-weight: bold
+    &.italic
+      font-style: italic
+    &.entity
+      cursor: help
