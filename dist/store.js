@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.setState = exports.getState = undefined;
+exports.setState = exports.getState = exports.clearStore = undefined;
 
 var _pick = require('lodash/pick');
 
@@ -20,6 +20,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 var store = {};
 
+var clearStore = exports.clearStore = function clearStore() {
+  return store = {};
+};
 var getState = exports.getState = function getState(key) {
   return key ? (0, _isArray2.default)(key) ? (0, _pick2.default)(store, key) : store[key] : store;
 };

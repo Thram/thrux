@@ -191,6 +191,16 @@ addMiddleware(({state, action, prev, payload, next}) => console.log({state, acti
 addMiddleware([({prev}) => console.log('prev', prev), ({next}) => console.log('next', next)]);
 ```
 
+#### reset()
+
+Reset Thrux store.
+
+```javascript
+import {reset} from 'thrux';
+
+reset();
+```
+
 ## Examples
 
 - [Counter](https://github.com/Thram/thrux/blob/master/examples/counter.js)

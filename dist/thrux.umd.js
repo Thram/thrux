@@ -2142,7 +2142,7 @@ module.exports = stubArray;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.setState = exports.getState = undefined;
+exports.setState = exports.getState = exports.clearStore = undefined;
 
 var _pick = __webpack_require__(180);
 
@@ -2159,6 +2159,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 var store = {};
 
+var clearStore = exports.clearStore = function clearStore() {
+  return store = {};
+};
 var getState = exports.getState = function getState(key) {
   return key ? (0, _isArray2.default)(key) ? (0, _pick2.default)(store, key) : store[key] : store;
 };
@@ -6180,7 +6183,7 @@ module.exports = g;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.initState = exports.state = exports.dispatch = exports.addMiddleware = exports.register = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
+exports.initState = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.register = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }(); /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * Created by thram on 16/01/17.
@@ -6350,6 +6353,8 @@ var dispatch = exports.dispatch = function dispatch(keyType, data) {
 };
 
 var state = exports.state = _store.getState;
+
+var reset = exports.reset = _store.clearStore;
 
 var initState = exports.initState = function initState(key) {
   return key ? dispatch((0, _isArray2.default)(key) ? (0, _map2.default)(key, function (k) {

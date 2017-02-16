@@ -169,7 +169,7 @@ test('Dispatch an action with promise that fails', (assert) => {
   const user = {
     SIGN_IN: createDict(getUserError, (payload) => payload && payload.user, (actual) => {
       const expected = {error: 'User not found'};
-      assert.deepEqual(actual, expected, 'Promise resolve correctly');
+      assert.deepEqual(actual, expected, 'Promise failed');
       assert.end();
     })
   };
@@ -211,7 +211,7 @@ test('Initialize all states', (assert) => {
   initState();
   const expected = {counter: 0, counter2: 0},
         actual   = state(['counter', 'counter2']);
-  assert.deepEqual(actual, expected, 'Action dispatched');
+  assert.deepEqual(actual, expected, 'Actions dispatched');
   assert.end();
 });
 
