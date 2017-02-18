@@ -9,8 +9,13 @@ If you are new at programming, or you never bumped into technologies like [Flux]
 With this architecture you’re encouraged to use unidirectional data flow. This could be simplified in a way that looks like this:
   
   
+  
+  
 ![State management](https://raw.githubusercontent.com/Thram/thrux/gh-pages/assets/state_management.png)
-
+ 
+ 
+ 
+ 
 Let's break this down:
 
 - **View:** Is your presentation layer. Here you will be displaying your data from the ***Store*** and also waiting for any event (Human or not) to trigger an ***Action***. 
@@ -20,8 +25,14 @@ Let's break this down:
  
 So how does this work? Here I show you an example:
  
+ 
+ 
+ 
 ![Example flow](https://raw.githubusercontent.com/Thram/thrux/gh-pages/assets/example_flow.png)
-
+ 
+ 
+ 
+ 
 As you can see, you start with your current ***State***(***0***), then from the ***View*** an ***Action***(***INCERASE***) is triggered, this ***Action*** is processed by the ***Dispatcher*** function (***State + 1***) and returns a ***New State*** that gets set on the ***Store*** changing the current ***State***(***1***) and the ***View*** shows the new ***State***.
  
 So in summary:
@@ -42,7 +53,12 @@ So in summary:
  Let me show you how simple the above example could look using Thrux:
  
  
+ 
+ 
  ![Example flow](https://raw.githubusercontent.com/Thram/thrux/gh-pages/assets/example_flow.png)
+
+
+
 
 ```javascript
 import {register,createDict, dispatch, observe, state} from "thrux";
