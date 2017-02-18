@@ -45,7 +45,7 @@ So in summary:
  ![Example flow](https://raw.githubusercontent.com/Thram/thrux/gh-pages/assets/example_flow.png)
 
 ```javascript
-import {register,createDict, observe, state} from "thrux";
+import {register,createDict, dispatch, observe, state} from "thrux";
 
 register({
   counter:{
