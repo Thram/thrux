@@ -1,4 +1,4 @@
-![Thrux](https://raw.githubusercontent.com/Thram/thrux/master/thrux_logo.png)
+# ![Thrux](https://raw.githubusercontent.com/Thram/thrux/master/thrux_logo.png)
 
 *`(n.) Something that is the absolute core and driving force behind something.`*
 
@@ -48,7 +48,7 @@ So in summary:
  
  # So why use Thrux?
  
- I've been working with this architecture for long time, even before this tools came up I used to apply this concept on my apps using my own implementations. When Redux came out it was a relief, but after using it in several projects I found that at some point, if my app scales, my Redux files (actions/reducers/store) start to get messy and a bit annoying to handle. I also found my self writing a lot of boilerplate code every time I defined a new action, so inspired by the basic concepts that I just explained, I decided to create this library where I've simplified that workflow and aim to have a better and easier file structure.
+ I've been working with this architecture for long time, I used to apply this concept on my apps using my own implementations. When Redux came out it was a relief, but after using it in several projects I found that at some point, if my app scales, my Redux files (actions/reducers/store) start to get messy and a bit annoying to handle. I also found my self writing a lot of boilerplate code every time I defined a new action, so inspired by the basic concepts that I just explained, I decided to create this library where I've simplified that workflow and aim to have a better and easier file structure.
  
  Let me show you how simple the above example could look using Thrux:
  
