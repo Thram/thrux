@@ -39,7 +39,7 @@ const user = {
 
 ##### *Initialization*
 
-You can define a INIT dictionary with a function that sets the initial value of your state after register
+You can define an INIT action with a function that sets the initial value of your state after register
 
 ```javascript
 import {createDict} from 'thrux';
