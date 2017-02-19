@@ -27,8 +27,8 @@ $colors: (background: #1d1f21, current_line: #282a2e, selection: #373b41, foregr
 
 a.menu-logo
   position: fixed
-  right: 0.5em
-  top: 0.5em
+  right: 5px
+  top: 5px
   border: 1px solid #00B4FC
   border-radius: 50%
   width: 70px
@@ -37,6 +37,10 @@ a.menu-logo
   text-align: center
   padding-top: 8px
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .3)
+  &:active
+    box-shadow: none
+    right: 4px
+    top: 6px
   img
     height: 52px
     width: 48px
