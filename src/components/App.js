@@ -13,6 +13,8 @@ class App extends Component {
 
   openMenu = () => this.setState({menuOpen: true});
 
+  goHome = () => this.state.menuOpen ? this.setState({menuOpen: false}): location.hash='#';
+
   componentDidMount = () => observe('route', () => this.setState({menuOpen: false}));
 
   render = () => (
@@ -21,8 +23,8 @@ class App extends Component {
           <img src="https://raw.githubusercontent.com/Thram/thrux/gh-pages/assets/thrux_icon.png" alt="Menu"/>
         </a>
         <div className="side-bar" style={this.state.menuOpen ? {display: 'block'} : {}}>
-          <a href="#" className="logo">
-            <img src="https://raw.githubusercontent.com/Thram/thrux/master/thrux_logo_sm.png" alt="Thrux"/>
+          <a onClick={this.goHome} className="logo">
+            <img src="https://raw.githubusercontent.com/Thram/thrux/master/thrux_logo.png" alt="Thrux"/>
           </a>
           <Menu />
           <a href="https://github.com/Thram/thrux" className="github-logo">

@@ -16,10 +16,11 @@ $colors: (background: #1d1f21, current_line: #282a2e, selection: #373b41, foregr
   background: map-get($colors, background)
   display: none
   width: 100%
-  position: absolute
+  position: fixed
   top: 0
   left: 0
   @media screen and (min-width: 35.5em)
+    position: relative
     display: block
     min-width: 200px
     max-width: 200px
@@ -34,16 +35,21 @@ a.menu-logo
   height: 70px
   background: white
   text-align: center
-  padding-top: 6px
+  padding-top: 8px
   img
     height: 52px
     width: 48px
+  @media screen and (min-width: 35.5em)
+    display: none
 
 a.logo
-  width: 100%
+  margin: auto
   text-align: center
   padding: 20px
   background: map-get($colors, foreground)
+  width: 100%
+  img
+    width: 160px
 
 a
   display: inline-block
@@ -61,4 +67,8 @@ a
     padding: 0
     list-style: none
     li
-      margin-bottom: 10px
+      margin-bottom: 20px
+      font-size: 28px
+      @media screen and (min-width: 35.5em)
+        margin-bottom: 10px
+        font-size: 16px
