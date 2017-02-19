@@ -11,6 +11,9 @@ import Menu from "./Menu";
 class App extends Component {
   render = () => (
     <div className="container">
+      <a href="https://github.com/Thram/thrux" className="github-logo">
+        <img src="https://raw.githubusercontent.com/Thram/thrux/assets/GitHub-Mark-120px-plus.png" alt="Github"/>
+      </a>
       <div className="side-bar" style={this.state.app.sideBar}>
         <a href="#" className="logo">
           <img src="https://raw.githubusercontent.com/Thram/thrux/master/thrux_logo_sm.png" alt="Thrux"/>

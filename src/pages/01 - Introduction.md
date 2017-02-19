@@ -13,7 +13,7 @@ The main problem is the bidirectional communication, where one change can loop b
  
 In general the flow inside the MVC pattern is not well defined. A lot of the bigger implementations do it very differently.
 
-How does the Flux pattern solve this? By forcing an unidirectional flow of data between a system’s components. Is all about controlling the flow inside the app — and making it as simple to understand as possible. Using ***Stores*** that contain the application’s state and logic. The best abstraction is to think of stores as managing a particular domain of the application. They aren’t the same as models in MVC since models usually try to model single objects, while stores in Flux can store anything
+How does the Flux pattern solve this? By forcing an unidirectional flow of data between a system’s components. Is all about controlling the flow inside the app, and making it as simple to understand as possible. Using ***Stores*** that contain the application’s state and logic. The best abstraction is to think of stores as managing a particular domain of the application. They aren’t the same as models in MVC since models usually try to model single objects, while stores in Flux can store anything
 
 Every change goes through the dispatcher. A store can’t change other stores directly. Same applies for views and other actions. Changes must go through the dispatcher via actions.
 
