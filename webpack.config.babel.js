@@ -8,6 +8,7 @@ const INDEX_HTML_SETUP = {
   template  : 'node_modules/html-webpack-template/index.ejs',
   title     : 'Thrux Docs',
   appMountId: 'thrux-docs',
+  mobile    : true,
   inject    : false
 };
 
