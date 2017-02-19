@@ -1,6 +1,6 @@
 $colors: (background: #1d1f21, current_line: #282a2e, selection: #373b41, foreground: #f1f1f1, comment: #969896, red: #cc6666, orange: #de935f, yellow: #f0c674, green: #b5bd68, aqua: #8abeb7, blue: #81a2be, purple: #b294bb)
 
-.side-bar, .content
+.content
   @media screen and (min-width: 35.5em)
     flex: 1
     height: 100%
@@ -9,10 +9,35 @@ $colors: (background: #1d1f21, current_line: #282a2e, selection: #373b41, foregr
   padding: 20px
 
 .side-bar
+  flex: 1
+  height: 100%
+  padding-bottom: 1em
   box-shadow: 1px 0 1px 1px rgba(0, 0, 0, .3)
   background: map-get($colors, background)
+  display: none
+  width: 100%
+  position: absolute
+  top: 0
+  left: 0
   @media screen and (min-width: 35.5em)
+    display: block
+    min-width: 200px
     max-width: 200px
+
+a.menu-logo
+  position: fixed
+  right: 0.5em
+  top: 0.5em
+  border: 1px solid #00B4FC
+  border-radius: 50%
+  width: 70px
+  height: 70px
+  background: white
+  text-align: center
+  padding-top: 6px
+  img
+    height: 52px
+    width: 48px
 
 a.logo
   width: 100%
@@ -31,7 +56,6 @@ a
 
 .menu
   padding: 20px
-
   ul
     margin: 0
     padding: 0

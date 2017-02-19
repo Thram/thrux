@@ -4,13 +4,23 @@
 import React, {Component} from "react";
 import {debounce} from "lodash";
 import {connect} from "react-thrux";
+import {observe} from "thrux";
 import Markdown from "./Markdown";
 import Menu from "./Menu";
 
 class App extends Component {
+  state = {menuOpen: false};
+
+  openMenu = () => this.setState({menuOpen: true});
+
+  componentDidMount = () => observe('route', () => this.setState({menuOpen: false}));
+
   render = () => (
       <div className="container">
-        <div className="side-bar">
+        <a onClick={this.openMenu} className="menu-logo" style={this.state.menuOpen ? {display: 'none'} : {}}>
+          <img src="https://raw.githubusercontent.com/Thram/thrux/gh-pages/assets/thrux_icon.png" alt="Menu"/>
+        </a>
+        <div className="side-bar" style={this.state.menuOpen ? {display: 'block'} : {}}>
           <a href="#" className="logo">
             <img src="https://raw.githubusercontent.com/Thram/thrux/master/thrux_logo_sm.png" alt="Thrux"/>
           </a>
