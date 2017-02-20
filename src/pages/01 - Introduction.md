@@ -28,20 +28,20 @@ Let's break this down:
 - **View:** Is your presentation layer. Here you will be displaying your data from the ***Store*** and also waiting for any event (Human or not) to trigger an ***Action***. 
 - **Action:** Is the behaviour you want to process. These actions will have a related function that will change your current state. 
 - **Dispatcher:** Is the function related to the action. This function will generate a new state and pass it to the ***Store***.
-- **Store:** Is where you storage the current state of your application.
+- **Store:** Is where you storage the current states of your application.
  
 So how does this work? Here I show you an example:
  
 ![Example flow](https://raw.githubusercontent.com/Thram/thrux/gh-pages/assets/example_flow.png)
  
-As you can see, you start with your current ***State***(***0***), then from the ***View*** an ***Action***(***INCERASE***) is triggered, this ***Action*** is processed by the ***Dispatcher*** function (***State + 1***) and returns a ***New State*** that gets set on the ***Store*** changing the current ***State***(***1***) and the ***View*** shows the new ***State***.
+As you can see, you start with your current ***Counter's State***(***0***), then from the ***View*** an ***Action***(***counter:INCERASE***) is triggered, this ***Action*** is processed by the ***Dispatcher*** function (***Counter + 1***) and returns a ***New State*** that gets set on the ***Store*** changing the current ***Counter's State***(***1***) and the ***View*** shows the new ***Counter's State***.
  
 So in summary:
  
- 1. The ***View*** shows the current ***State*** from the ***Store*** and waits for an ***Action*** to get triggered.
+ 1. The ***View*** shows the current ***Counter's State*** from the ***Store*** and waits for an ***Action*** to get triggered.
  2. The ***Action*** triggers
  3. The ***Dispatcher*** process the ***Action*** and return a ***New State***
- 4. The ***Store*** sets the ***New State*** as the current ***State***
+ 4. The ***Store*** sets the ***New State*** as the current ***Counter's State***
  
 And Repeat...
 
