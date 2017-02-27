@@ -11,6 +11,8 @@ import reduce from 'lodash/reduce';
 import assign from 'lodash/assign';
 import isEqual from 'lodash/isEqual';
 import isArray from 'lodash/isArray';
+import {Promise} from 'es6-promise';
+
 import {getState, setState, clearStore} from "./store";
 
 let middlewares = [],
@@ -31,9 +33,9 @@ const addObserver = (stateKey, funct) => observers[stateKey] = reduce([funct],
     (result, value) => [].concat(result, [value]),
     observers[stateKey] || []);
 
-export const removeObserver = (stateKey, funct) => remove(observers[stateKey], (value) => value === funct);
+export const removeObserver = (stateKey, funct) => remove(observers[stateKey], (value) => isEqual(value, funct));
 
-const processObserver = (observer, currentState, actionKey) => setTimeout(() => observer(currentState, actionKey), 0);
+const processObserver = (observer, currentState, actionKey) => new Promise((resolve, reject) => (observer(currentState, actionKey), resolve()));
 
 const processObservers = (stateKey, currentState, actionKey) => {
   const stateObservers = observers[stateKey];

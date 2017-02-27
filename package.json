@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/Thram/thrux#readme",
   "dependencies": {
+    "es6-promise": "^4.0.5",
     "lodash": "^4.17.4"
   },
   "devDependencies": {

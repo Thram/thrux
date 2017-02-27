@@ -50,6 +50,8 @@ var _isArray = require('lodash/isArray');
 
 var _isArray2 = _interopRequireDefault(_isArray);
 
+var _es6Promise = require('es6-promise');
+
 var _store = require('./store');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -86,14 +88,14 @@ var addObserver = function addObserver(stateKey, funct) {
 
 var removeObserver = exports.removeObserver = function removeObserver(stateKey, funct) {
   return (0, _remove2.default)(observers[stateKey], function (value) {
-    return value === funct;
+    return (0, _isEqual2.default)(value, funct);
   });
 };
 
 var processObserver = function processObserver(observer, currentState, actionKey) {
-  return setTimeout(function () {
-    return observer(currentState, actionKey);
-  }, 0);
+  return new _es6Promise.Promise(function (resolve, reject) {
+    return observer(currentState, actionKey), resolve();
+  });
 };
 
 var processObservers = function processObservers(stateKey, currentState, actionKey) {

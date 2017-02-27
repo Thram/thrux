@@ -246,7 +246,7 @@ test('Observe state change', (assert) => {
   dispatch('counter:INCREASE');
 });
 
-test('Observe should not trigger', (assert) => {
+test('Remove observer, observe should not trigger', (assert) => {
   reset();
   const test  = {INIT: createDict(() => 'test', (val) => val)},
         check = (state) => assert.error();
