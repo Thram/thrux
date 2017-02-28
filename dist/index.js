@@ -127,7 +127,7 @@ var processObservers = function processObservers(stateKey, currentState, actionK
   var stateObservers = observers[stateKey],
       _process = function _process(observers, key) {
     observers && observers.length > 0 && (key === '_global' || !(0, _isEqual2.default)((0, _get2.default)(prev, '' + stateKey + key), (0, _get2.default)(currentState, '' + stateKey + key))) && (0, _forEach2.default)(observers, function (observer) {
-      return processObserver(observer, key === '_global' ? currentState : (0, _get2.default)(currentState, stateKey), actionKey);
+      return processObserver(observer, key === '_global' ? currentState : (0, _get2.default)(currentState, '' + stateKey + key), actionKey);
     });
   };
   (0, _forEach2.default)(stateObservers, _process);

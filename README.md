@@ -141,6 +141,15 @@ import {observe} from 'thrux';
 
 observe('user', (state, actionKey)=> console.log(actionKey, state.profile));
 ```
+##### *Micro Observer*
+You can observe specific parts of the state for changes
+
+```javascript
+import {observe} from 'thrux';
+
+observe('user.profile', (profile, actionKey)=> console.log(actionKey, profile));
+observe('user.profile.name', (name, actionKey)=> console.log(actionKey, name));
+```
 
 #### removeObserver(stateKey, listener)
 

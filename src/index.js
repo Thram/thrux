@@ -64,7 +64,7 @@ const processObservers = (stateKey, currentState, actionKey, prev) => {
               processObserver(
                   observer,
                   key === '_global' ? currentState
-                      : get(currentState, stateKey),
+                      : get(currentState, `${stateKey}${key}`),
                   actionKey));
         };
   forEach(stateObservers, _process);

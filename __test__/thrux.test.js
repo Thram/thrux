@@ -155,7 +155,7 @@ test('Micro observer', (assert) => {
   const user = {SIGN_IN: createDict(getUser)};
   register({user});
   observe('user.name', (actual) => {
-    const expected = {name: 'Thram'};
+    const expected = 'Thram';
     assert.deepEqual(actual, expected, 'Promise resolve correctly with micro observer');
     assert.end();
   });
