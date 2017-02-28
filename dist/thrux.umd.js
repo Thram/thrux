@@ -7698,7 +7698,7 @@ var dispatchAction = function dispatchAction(keyType, data) {
           return nextValue && nextValue.then ? nextValue.then(processNext, dict.error) : processAction({ state: state, action: action, prev: prev, payload: payload, next: nextValue });
         };
 
-        processNext(dict.reducer(payload, (0, _cloneDeep2.default)(prev)));
+        processNext(dict.reducer(payload, prev));
       })();
     } catch (e) {
       dict.error(e);
