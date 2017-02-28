@@ -11,6 +11,7 @@ import reduce from 'lodash/reduce';
 import assign from 'lodash/assign';
 import isEqual from 'lodash/isEqual';
 import isArray from 'lodash/isArray';
+import forEach from 'lodash/forEach';
 import {Promise} from 'es6-promise';
 
 import {getState, setState, clearStore} from "./store";
@@ -29,21 +30,47 @@ const baseDict = {
   INIT: createDict(() => undefined)
 };
 
-const addObserver = (stateKey, funct) => observers[stateKey] = reduce([funct],
-    (result, value) => [].concat(result, [value]),
-    observers[stateKey] || []);
+const addObserver = (stateKey, funct) => {
+  const [mainState, ...rest] = stateKey.match(/.+?(?=\.|\[+]|$)/g);
+  observers[mainState]       = observers[mainState] || {_global: []};
+  const _add                 = (key) =>
+      observers[mainState][key] = reduce(
+          [funct],
+          (result, value) => [].concat(result, [value]),
+          observers[mainState][key] || []
+      );
 
-export const removeObserver = (stateKey, funct) => remove(observers[stateKey], (value) => isEqual(value, funct));
+  rest.length > 0 ? _add(rest.join('')) : _add('_global');
+};
+
+export const removeObserver = (stateKey, funct) => {
+  const [mainState, ...rest] = stateKey.match(/.+?(?=\.|\[+]|$)/g);
+
+  const _remove = (key) =>
+      remove(observers[mainState][key], (value) => isEqual(value, funct));
+
+  rest.length > 0 ? _remove(rest.join('')) : _remove('_global');
+};
 
 const processObserver = (observer, currentState, actionKey) => new Promise((resolve, reject) => (observer(currentState, actionKey), resolve()));
 
-const processObservers = (stateKey, currentState, actionKey) => {
-  const stateObservers = observers[stateKey];
-  if (stateObservers && stateObservers.length > 0)
-    stateObservers.forEach((observer) => processObserver(observer, currentState, actionKey));
+const processObservers = (stateKey, currentState, actionKey, prev) => {
+  const stateObservers = observers[stateKey],
+        _process       = (observers, key) => {
+          observers
+          && observers.length > 0
+          && (key === '_global' || !isEqual(get(prev, stateKey), get(currentState, stateKey)))
+          && forEach(observers, (observer) =>
+              processObserver(
+                  observer,
+                  key === '_global' ? currentState
+                      : get(currentState, stateKey),
+                  actionKey));
+        };
+  forEach(stateObservers, _process);
 };
 
-const processMiddlewares = (status) => middlewares.forEach((middleware) => middleware(status));
+const processMiddlewares = (status) => forEach(middlewares, (middleware) => middleware(status));
 
 export const observe = (stateKey, funct) => addObserver(stateKey, funct);
 
@@ -52,7 +79,7 @@ export const clearObservers = (stateKey) => observers[stateKey] = undefined;
 export const register = (newDicts) => {
   assign(dicts, reduce(newDicts, (result, dict, stateKey) =>
       set(result, stateKey, assign({}, baseDict, dict)), {}));
-  keys(newDicts).forEach(initState);
+  forEach(keys(newDicts), initState);
 };
 
 export const addMiddleware = (middleware) => isArray(middleware) ?
@@ -63,7 +90,7 @@ const processAction = ({state, action, prev, payload, next}) => {
   if (!isEqual(prev, next)) {
     processMiddlewares({state, action, prev, payload, next: clone(next)});
     setState(state, next);
-    processObservers(state, clone(next), action);
+    processObservers(state, clone(next), action, prev);
   }
 };
 
@@ -86,7 +113,7 @@ const dispatchAction  = (keyType, data) => {
   }
 };
 export const dispatch = (keyType, data) => isArray(keyType) ?
-    keyType.forEach((k) => dispatchAction(k, data))
+    forEach(keyType, (k) => dispatchAction(k, data))
     : dispatchAction(keyType, data);
 
 export const state = getState;
@@ -100,4 +127,4 @@ export const reset = () => {
 
 export const initState = (key) => key ?
     dispatch(isArray(key) ? map(key, (k) => `${k}:INIT`) : `${key}:INIT`)
-    : keys(getState()).forEach((k) => dispatch(`${k}:INIT`));
+    : forEach(keys(getState()), (k) => dispatch(`${k}:INIT`));

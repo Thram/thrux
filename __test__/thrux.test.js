@@ -140,11 +140,23 @@ test('Dispatch an action that fails without catching the error', (assert) => {
 
 test('Dispatch an action with promise', (assert) => {
   reset();
-  const user = {SIGN_IN: createDict(getUser)};
+  const user = {SIGN_IN: createDict(() => ({user: {name: 'Thram'}}))};
   register({user});
   observe('user', (actual) => {
     const expected = {user: {name: 'Thram'}};
     assert.deepEqual(actual, expected, 'Promise resolve correctly');
+    assert.end();
+  });
+  dispatch('user:SIGN_IN');
+});
+
+test('Micro observer', (assert) => {
+  reset();
+  const user = {SIGN_IN: createDict(getUser)};
+  register({user});
+  observe('user.name', (actual) => {
+    const expected = {name: 'Thram'};
+    assert.deepEqual(actual, expected, 'Promise resolve correctly with micro observer');
     assert.end();
   });
   dispatch('user:SIGN_IN');
@@ -248,12 +260,32 @@ test('Observe state change', (assert) => {
 
 test('Remove observer, observe should not trigger', (assert) => {
   reset();
-  const test  = {INIT: createDict(() => 'test', (val) => val)},
+  const test  = {
+          INIT  : createDict(() => 'foo', (val) => val),
+          CHANGE: createDict(() => 'bar', (val) => val)
+        },
         check = (state) => assert.error();
   register({test});
   observe('test', check);
   removeObserver('test', check);
-  dispatch('test:INIT');
+  dispatch('test:CHANGE');
+  setTimeout(() => {
+    assert.pass('Observe not executed');
+    assert.end();
+  }, 200);
+});
+
+test('Remove micro observer, observe should not trigger', (assert) => {
+  reset();
+  const test  = {
+          INIT  : createDict(() => ({value: 'foo'})),
+          CHANGE: createDict(() => ({value: 'bar'}))
+        },
+        check = (state) => assert.error();
+  register({test});
+  observe('test.value', check);
+  removeObserver('test.value', check);
+  dispatch('test:CHANGE');
   setTimeout(() => {
     assert.pass('Observe not executed');
     assert.end();
