@@ -5,14 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initState = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.register = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }(); /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * Created by thram on 16/01/17.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          */
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
+var _remove2 = require('lodash/remove');
 
-var _remove = require('lodash/remove');
-
-var _remove2 = _interopRequireDefault(_remove);
+var _remove3 = _interopRequireDefault(_remove2);
 
 var _cloneDeep = require('lodash/cloneDeep');
 
@@ -50,11 +47,20 @@ var _isArray = require('lodash/isArray');
 
 var _isArray2 = _interopRequireDefault(_isArray);
 
+var _forEach = require('lodash/forEach');
+
+var _forEach2 = _interopRequireDefault(_forEach);
+
 var _es6Promise = require('es6-promise');
 
 var _store = require('./store');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); } /**
+                                                                               * Created by thram on 16/01/17.
+                                                                               */
+
 
 var middlewares = [],
     dicts = {},
@@ -81,15 +87,34 @@ var baseDict = {
 };
 
 var addObserver = function addObserver(stateKey, funct) {
-  return observers[stateKey] = (0, _reduce2.default)([funct], function (result, value) {
-    return [].concat(result, [value]);
-  }, observers[stateKey] || []);
+  var _stateKey$match = stateKey.match(/.+?(?=\.|\[+]|$)/g),
+      _stateKey$match2 = _toArray(_stateKey$match),
+      mainState = _stateKey$match2[0],
+      rest = _stateKey$match2.slice(1);
+
+  observers[mainState] = observers[mainState] || { _global: [] };
+  var _add = function _add(key) {
+    return observers[mainState][key] = (0, _reduce2.default)([funct], function (result, value) {
+      return [].concat(result, [value]);
+    }, observers[mainState][key] || []);
+  };
+
+  rest.length > 0 ? _add(rest.join('')) : _add('_global');
 };
 
 var removeObserver = exports.removeObserver = function removeObserver(stateKey, funct) {
-  return (0, _remove2.default)(observers[stateKey], function (value) {
-    return (0, _isEqual2.default)(value, funct);
-  });
+  var _stateKey$match3 = stateKey.match(/.+?(?=\.|\[+]|$)/g),
+      _stateKey$match4 = _toArray(_stateKey$match3),
+      mainState = _stateKey$match4[0],
+      rest = _stateKey$match4.slice(1);
+
+  var _remove = function _remove(key) {
+    return (0, _remove3.default)(observers[mainState][key], function (value) {
+      return (0, _isEqual2.default)(value, funct);
+    });
+  };
+
+  rest.length > 0 ? _remove(rest.join('')) : _remove('_global');
 };
 
 var processObserver = function processObserver(observer, currentState, actionKey) {
@@ -98,15 +123,18 @@ var processObserver = function processObserver(observer, currentState, actionKey
   });
 };
 
-var processObservers = function processObservers(stateKey, currentState, actionKey) {
-  var stateObservers = observers[stateKey];
-  if (stateObservers && stateObservers.length > 0) stateObservers.forEach(function (observer) {
-    return processObserver(observer, currentState, actionKey);
-  });
+var processObservers = function processObservers(stateKey, currentState, actionKey, prev) {
+  var stateObservers = observers[stateKey],
+      _process = function _process(observers, key) {
+    observers && observers.length > 0 && (key === '_global' || !(0, _isEqual2.default)((0, _get2.default)(prev, '' + stateKey + key), (0, _get2.default)(currentState, '' + stateKey + key))) && (0, _forEach2.default)(observers, function (observer) {
+      return processObserver(observer, key === '_global' ? currentState : (0, _get2.default)(currentState, stateKey), actionKey);
+    });
+  };
+  (0, _forEach2.default)(stateObservers, _process);
 };
 
 var processMiddlewares = function processMiddlewares(status) {
-  return middlewares.forEach(function (middleware) {
+  return (0, _forEach2.default)(middlewares, function (middleware) {
     return middleware(status);
   });
 };
@@ -123,7 +151,7 @@ var register = exports.register = function register(newDicts) {
   (0, _assign2.default)(dicts, (0, _reduce2.default)(newDicts, function (result, dict, stateKey) {
     return (0, _set2.default)(result, stateKey, (0, _assign2.default)({}, baseDict, dict));
   }, {}));
-  (0, _keys2.default)(newDicts).forEach(initState);
+  (0, _forEach2.default)((0, _keys2.default)(newDicts), initState);
 };
 
 var addMiddleware = exports.addMiddleware = function addMiddleware(middleware) {
@@ -140,7 +168,7 @@ var processAction = function processAction(_ref) {
   if (!(0, _isEqual2.default)(prev, next)) {
     processMiddlewares({ state: state, action: action, prev: prev, payload: payload, next: (0, _cloneDeep2.default)(next) });
     (0, _store.setState)(state, next);
-    processObservers(state, (0, _cloneDeep2.default)(next), action);
+    processObservers(state, (0, _cloneDeep2.default)(next), action, prev);
   }
 };
 
@@ -169,7 +197,7 @@ var dispatchAction = function dispatchAction(keyType, data) {
   }
 };
 var dispatch = exports.dispatch = function dispatch(keyType, data) {
-  return (0, _isArray2.default)(keyType) ? keyType.forEach(function (k) {
+  return (0, _isArray2.default)(keyType) ? (0, _forEach2.default)(keyType, function (k) {
     return dispatchAction(k, data);
   }) : dispatchAction(keyType, data);
 };
@@ -186,7 +214,7 @@ var reset = exports.reset = function reset() {
 var initState = exports.initState = function initState(key) {
   return key ? dispatch((0, _isArray2.default)(key) ? (0, _map2.default)(key, function (k) {
     return k + ':INIT';
-  }) : key + ':INIT') : (0, _keys2.default)((0, _store.getState)()).forEach(function (k) {
+  }) : key + ':INIT') : (0, _forEach2.default)((0, _keys2.default)((0, _store.getState)()), function (k) {
     return dispatch(k + ':INIT');
   });
 };

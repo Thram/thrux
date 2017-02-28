@@ -59,7 +59,7 @@ const processObservers = (stateKey, currentState, actionKey, prev) => {
         _process       = (observers, key) => {
           observers
           && observers.length > 0
-          && (key === '_global' || !isEqual(get(prev, stateKey), get(currentState, stateKey)))
+          && (key === '_global' || !isEqual(get(prev, `${stateKey}${key}`), get(currentState, `${stateKey}${key}`)))
           && forEach(observers, (observer) =>
               processObserver(
                   observer,

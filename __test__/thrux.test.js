@@ -162,6 +162,23 @@ test('Micro observer', (assert) => {
   dispatch('user:SIGN_IN');
 });
 
+test('Micro observer dont change', (assert) => {
+  reset();
+  const user = {
+    INIT   : createDict(() => ({user: {name: 'Thram'}})),
+    SIGN_IN: createDict(() => ({user: {name: 'Thram', lang: 'javascript'}}))
+  };
+  register({user});
+  observe('user.name', (actual) => {
+    assert.error();
+  });
+  dispatch('user:SIGN_IN');
+  setTimeout(() => {
+    assert.pass('Observe not executed');
+    assert.end();
+  }, 1000);
+});
+
 test('Dispatch an action with promise that fails', (assert) => {
   reset();
   clearObservers(['user']);
