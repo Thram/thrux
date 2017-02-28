@@ -45,7 +45,7 @@ So in summary:
  
 And Repeat...
 
-At that's it, a simple explanation of State Management. Depending on what tool you use this pattern can mutate a little bit, but this is the simplest way to look at it to understand how all this tools works.
+And that's it, a simple explanation of State Management. Depending on what tool you use this pattern can mutate a little bit, but this is the simplest way to look at it to understand how all this tools works.
 
 # So why use Thrux?
 

@@ -17,7 +17,7 @@ class App extends Component {
 
   render = () => (
       <div className="container">
-        <a onClick={this.toggleMenu} className="menu-btn" >
+        <a onClick={this.toggleMenu} className="menu-btn">
           <div className={`nav-icon ${this.state.menuOpen && 'open'}`}>
             {times(4, (index) => <span key={index}/>)}
           </div>
@@ -33,10 +33,10 @@ class App extends Component {
           </a>
         </div>
         <div className="content">
-          <Markdown page={this.state.route}/>
+          <Markdown page={this.props.route}/>
         </div>
       </div>
   )
 }
 
-export default connect(['route'], App);
+export default connect('route', App);

@@ -17,24 +17,24 @@
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-2": "^6.22.0",
     "babel-register": "^6.23.0",
+    "css-loader": "^0.26.2",
     "html-webpack-plugin": "^2.28.0",
     "html-webpack-template": "^6.0.1",
     "node-sass": "^4.5.0",
     "raw-loader": "^0.5.1",
+    "sass-loader": "^6.0.2",
+    "style-loader": "^0.13.2",
     "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.3.0"
+    "webpack-dev-server": "^2.4.1"
   },
   "dependencies": {
-    "css-loader": "^0.26.1",
     "lodash": "^4.17.4",
     "marked": "^0.3.6",
     "prismjs": "^1.6.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "react-thrux": "^1.2.3",
-    "sass-loader": "^6.0.1",
-    "style-loader": "^0.13.1",
-    "thrux": "^2.5.4",
-    "thrux-logger": "^1.0.4"
+    "react-thrux": "^2.2.3",
+    "thrux": "^2.7.2",
+    "thrux-logger": "^1.0.5"
   }
 }

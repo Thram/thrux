@@ -57,7 +57,7 @@ Triggers `INIT` action (a.k.a. initialize the state manually)
 
 Param | Type | Description
 ----- | ---- | -----------
-key | String [Array of Strings] | *(optional)* State(s) that want to initialize
+key | String *or* [Array of Strings] | *(optional)* State(s) that want to initialize
 
 ```javascript
 import {initState} from 'thrux';
@@ -86,7 +86,7 @@ Dispatch the action that will update your state.
 
 Param | Type | Description
 ----- | ---- | -----------
-stateAction | String: **'state:ACTION'** [Array of Strings] | String(s) that represents the state(s) and the action(s) that you want to dispatch.
+stateAction | String *or* [Array of Strings] | String(s) that represents the state(s) and the action(s) that you want to dispatch: **'state:ACTION'**
 data | Any | *(optional)* Whatever data your reducer is prepared to handle
 
 ```javascript
@@ -107,7 +107,7 @@ Retrieve the state value.
 
 Param | Type | Description
 ----- | ---- | -----------
-stateKey | String [Array of Strings] | *(optional)* String(s) that represents the state(s)
+stateKey | String *or* [Array of Strings] | *(optional)* String(s) that represents the state(s)
 
 ```javascript
 import {state} from 'thrux';
@@ -132,6 +132,15 @@ listener | Function | Function that gets trigger when the state changes
 import {observe} from 'thrux';
 
 observe('user', (state, actionKey)=> console.log(actionKey, state.profile));
+```
+##### *Micro Observer*
+You can observe specific parts of the state for changes
+
+```javascript
+import {observe} from 'thrux';
+
+observe('user.profile', (profile, actionKey)=> console.log(actionKey, profile));
+observe('user.profile.name', (name, actionKey)=> console.log(actionKey, name));
 ```
 
 #### removeObserver(stateKey, listener)
@@ -159,12 +168,13 @@ Remove all observe listeners.
 
 Param | Type | Description
 ----- | ---- | -----------
-stateKey | String | String that represents the state
+stateKey | String *or* [Array of Strings] | String that represents the state
 
 ```javascript
 import {clearObservers} from 'thrux';
 
 clearObservers('user');
+clearObservers(['counter1', 'counter2']);
 ```
 
 #### addMiddleware(middleware)
@@ -173,7 +183,7 @@ Add some middleware function. It won't modified the state.
 
 Param | Type | Description
 ----- | ---- | -----------
-middleware | Function *or* Array of Functions | Function(s) that trigger when the state changes with the following params: {state, action, prev, payload, next}
+middleware | Function *or* [Array of Functions] | Function(s) that trigger when the state changes with the following params: {state, action, prev, payload, next}
 
 ```javascript
 import {addMiddleware} from 'thrux';
@@ -181,4 +191,14 @@ import {addMiddleware} from 'thrux';
 // Add logger
 addMiddleware(({state, action, prev, payload, next}) => console.log({state, action, prev, payload, next}));
 addMiddleware([({prev}) => console.log('prev', prev), ({next}) => console.log('next', next)]);
+```
+
+#### reset()
+
+Reset Thrux store.
+
+```javascript
+import {reset} from 'thrux';
+
+reset();
 ```
