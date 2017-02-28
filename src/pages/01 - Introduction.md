@@ -34,7 +34,7 @@ So how does this work? Here I show you an example:
  
 ![Example flow](https://raw.githubusercontent.com/Thram/thrux/gh-pages/assets/example_flow.png)
  
-As you can see, you start with your current ***Counter's State***(***0***), then from the ***View*** an ***Action***(***counter:INCERASE***) is triggered, this ***Action*** is processed by the ***Dispatcher*** function (***Counter + 1***) and returns a ***New State*** that gets set on the ***Store*** changing the current ***Counter's State***(***1***) and the ***View*** shows the new ***Counter's State***.
+As you can see, you start with your current ***Counter's State***(***0***), then from the ***View*** an ***Action***(***Counter:INCREASE***) is triggered, this ***Action*** is processed by the ***Dispatcher*** function (***Counter + 1***) and returns a ***New State*** that gets set on the ***Store*** changing the current ***Counter's State***(***1***) and the ***View*** shows the new ***Counter's State***.
  
 So in summary:
  
