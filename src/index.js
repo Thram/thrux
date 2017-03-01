@@ -106,7 +106,7 @@ const dispatchAction  = (keyType, data) => {
           nextValue.then(processNext, dict.error)
           : processAction({state, action, prev, payload, next: nextValue});
 
-      processNext(dict.reducer(payload, prev));
+      processNext(dict.reducer(payload, clone(prev)));
     } catch (e) {
       dict.error(e)
     }

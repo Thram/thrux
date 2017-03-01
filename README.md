@@ -20,7 +20,21 @@ or with yarn
 
 ```yarn add thrux```
 
-## API
+# API
+
+#### Dictionaries
+
+```javascript
+import {register} from 'thrux';
+
+const state = {
+    reducer: (payload, state)=> console.log('New State', payload), 
+    map: (rawValue) => rawValue.data, 
+    error: (err)=> console.err('An error happened', err)
+};
+
+register({state});
+```
 
 #### createDict(reducer, map, error)
 
@@ -29,7 +43,7 @@ Create the dictionary of methods that will be used for each action.
 Param | Type | Description
 ----- | ---- | -----------
 reducer | Function | Update the current state. This could return an **Object** or a **Promise** and update the state async.
-map | Function | *(optional)* Map the value handle by the reducer.
+map | Function | *(optional)* A map function to sanitize the value handle by the reducer.
 error | Function | *(optional)* Error handler.
 
 ```javascript
@@ -47,7 +61,7 @@ const user = {
 
 ##### *Initialization*
 
-You can define a INIT dictionary with a function that sets the initial value of your state after register
+You can define an INIT action with a function that sets the initial value of your state after register
 
 ```javascript
 import {createDict} from 'thrux';
