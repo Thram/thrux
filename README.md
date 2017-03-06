@@ -28,7 +28,7 @@ or with yarn
 import {register} from 'thrux';
 
 const state = {
-    reducer: (payload, state)=> console.log('New State', payload), 
+    dispatcher: (payload, state)=> console.log('New State', payload), 
     map: (rawValue) => rawValue.data, 
     error: (err)=> console.err('An error happened', err)
 };
@@ -36,14 +36,14 @@ const state = {
 register({state});
 ```
 
-#### createDict(reducer, map, error)
+#### createDict(dispatcher, map, error)
 
 Create the dictionary of methods that will be used for each action.
 
 Param | Type | Description
 ----- | ---- | -----------
-reducer | Function | Update the current state. This could return an **Object** or a **Promise** and update the state async.
-map | Function | *(optional)* A map function to sanitize the value handle by the reducer.
+dispatcher | Function | Update the current state. This could return an **Object** or a **Promise** and update the state async.
+map | Function | *(optional)* A map function to sanitize the value handle by the dispatcher function.
 error | Function | *(optional)* Error handler.
 
 ```javascript
@@ -109,7 +109,7 @@ Dispatch the action that will update your state.
 Param | Type | Description
 ----- | ---- | -----------
 stateAction | String *or* [Array of Strings] | String(s) that represents the state(s) and the action(s) that you want to dispatch: **'state:ACTION'**
-data | Any | *(optional)* Whatever data your reducer is prepared to handle
+data | Any | *(optional)* Whatever data your dispatcher function is prepared to handle
 
 ```javascript
 import {dispatch} from 'thrux';
@@ -213,6 +213,20 @@ import {addMiddleware} from 'thrux';
 // Add logger
 addMiddleware(({state, action, prev, payload, next}) => console.log({state, action, prev, payload, next}));
 addMiddleware([({prev}) => console.log('prev', prev), ({next}) => console.log('next', next)]);
+```
+
+#### getActions(stateKeys)
+
+Retrieve the state(s) actions keys.
+
+Param | Type | Description
+----- | ---- | -----------
+stateKey | String *or* [Array of Strings] | *(optional)* String(s) that represents the state(s)
+
+```javascript
+import {getActions} from 'thrux';
+
+const actions = getActions('user'); // ['user:INIT', 'user:SIGN_IN']
 ```
 
 #### reset()

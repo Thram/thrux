@@ -16,46 +16,43 @@ import {Promise} from 'es6-promise';
 
 import {getState, setState, clearStore} from "./store";
 
-let middlewares = [],
-    dicts       = {},
-    observers   = {};
+let _middlewares = [],
+    _dicts       = {},
+    _observers   = {};
 
-export const createDict = (reducer, map = (value) => value, error = (err) => console.error(err)) => ({
+export const createDict = (dispatcher, map = (value) => value, error = (err) => console.error(err)) => ({
+  dispatcher,
   map,
-  reducer,
   error
 });
 
-const baseDict = {
-  INIT: createDict(() => undefined)
-};
+const baseDict = {INIT: createDict(() => undefined)};
 
 const addObserver = (stateKey, funct) => {
   const [mainState, ...rest] = stateKey.match(/.+?(?=\.|\[+]|$)/g);
-  observers[mainState]       = observers[mainState] || {_global: []};
-  const _add                 = (key) =>
-      observers[mainState][key] = reduce(
-          [funct],
-          (result, value) => [].concat(result, [value]),
-          observers[mainState][key] || []
-      );
+  _observers[mainState]      = _observers[mainState] || {_global: []};
 
-  rest.length > 0 ? _add(rest.join('')) : _add('_global');
+  const key = rest.length > 0 ? rest.join('') : '_global';
+
+  _observers[mainState][key] = reduce(
+      [funct],
+      (result, value) => [].concat(result, [value]),
+      _observers[mainState][key] || []
+  );
 };
 
 export const removeObserver = (stateKey, funct) => {
   const [mainState, ...rest] = stateKey.match(/.+?(?=\.|\[+]|$)/g);
 
-  const _remove = (key) =>
-      remove(observers[mainState][key], (value) => isEqual(value, funct));
+  const key = rest.length > 0 ? rest.join('') : '_global';
 
-  rest.length > 0 ? _remove(rest.join('')) : _remove('_global');
+  remove(_observers[mainState][key], (value) => isEqual(value, funct));
 };
 
 const processObserver = (observer, currentState, actionKey) => new Promise((resolve, reject) => (observer(currentState, actionKey), resolve()));
 
 const processObservers = (stateKey, currentState, actionKey, prev) => {
-  const stateObservers = observers[stateKey],
+  const stateObservers = _observers[stateKey],
         _process       = (observers, key) => {
           observers
           && observers.length > 0
@@ -70,21 +67,28 @@ const processObservers = (stateKey, currentState, actionKey, prev) => {
   forEach(stateObservers, _process);
 };
 
-const processMiddlewares = (status) => forEach(middlewares, (middleware) => middleware(status));
+const processMiddlewares = (status) => forEach(_middlewares, (middleware) => middleware(status));
 
 export const observe = (stateKey, funct) => addObserver(stateKey, funct);
 
-export const clearObservers = (stateKey) => observers[stateKey] = undefined;
+export const clearObservers = (stateKey) => _observers[stateKey] = undefined;
 
 export const register = (newDicts) => {
-  assign(dicts, reduce(newDicts, (result, dict, stateKey) =>
+  assign(_dicts, reduce(newDicts, (result, dict, stateKey) =>
       set(result, stateKey, assign({}, baseDict, dict)), {}));
   forEach(keys(newDicts), initState);
 };
 
+export const getActions = (stateKeys) => {
+  const getStateActions = (state) => map(keys(_dicts[state]), (action) => `${state}:${action}`);
+  return stateKeys ?
+      getStateActions(stateKeys)
+      : reduce(_dicts, (result, _dict, state) => result.concat(getStateActions(state)), []);
+};
+
 export const addMiddleware = (middleware) => isArray(middleware) ?
-    middlewares = [].concat(middlewares, middleware) :
-    middlewares.push(middleware);
+    _middlewares = [].concat(_middlewares, middleware) :
+    _middlewares.push(middleware);
 
 const processAction = ({state, action, prev, payload, next}) => {
   if (!isEqual(prev, next)) {
@@ -96,7 +100,7 @@ const processAction = ({state, action, prev, payload, next}) => {
 
 const dispatchAction  = (keyType, data) => {
   const [state, action]  = keyType.split(':'),
-        dict             = get(dicts, `${state}.${action}`);
+        dict             = get(_dicts, `${state}.${action}`);
   if (dict) {
     try {
       const prev    = getState(state),
@@ -106,7 +110,7 @@ const dispatchAction  = (keyType, data) => {
           nextValue.then(processNext, dict.error)
           : processAction({state, action, prev, payload, next: nextValue});
 
-      processNext(dict.reducer(payload, clone(prev)));
+      processNext(dict.dispatcher(payload, clone(prev)));
     } catch (e) {
       dict.error(e)
     }
@@ -119,9 +123,9 @@ export const dispatch = (keyType, data) => isArray(keyType) ?
 export const state = getState;
 
 export const reset = () => {
-  middlewares = [];
-  dicts       = {};
-  observers   = {};
+  _middlewares = [];
+  _dicts       = {};
+  _observers   = {};
   clearStore();
 };
 

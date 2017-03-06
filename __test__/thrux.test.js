@@ -7,6 +7,7 @@ import {
   addMiddleware,
   dispatch,
   state,
+  getActions,
   initState,
   createDict,
   observe,
@@ -22,11 +23,11 @@ const getUser      = () => createAPI({user: {name: 'Thram'}}),
       getUserError = () => createAPIError('User not found');
 
 test('Create dictionary', (assert) => {
-  const reducer  = () => console.log('reducer'),
-        map      = () => console.log('map'),
-        error    = () => console.log('error');
-  const expected = createDict(reducer, map, error),
-        actual   = {reducer, map, error};
+  const dispatcher = () => console.log('dispatcher'),
+        map        = () => console.log('map'),
+        error      = () => console.log('error');
+  const expected   = createDict(dispatcher, map, error),
+        actual     = {dispatcher, map, error};
 
   assert.deepEqual(expected, actual, 'Dictionary created');
   assert.end();
@@ -39,6 +40,30 @@ test('Register state', (assert) => {
   const expected = true,
         actual   = state().hasOwnProperty('user');
   assert.equal(actual, expected, 'State registered');
+  assert.end();
+});
+
+test('Get actions', (assert) => {
+  reset();
+  const init  = createDict(() => 'Thram');
+  const user  = {INIT: init};
+  const user2 = {INIT: init};
+  register({user, user2});
+  const expected = ['user:INIT', 'user2:INIT'],
+        actual   = getActions();
+  assert.deepEqual(actual, expected, 'Get registered actions');
+  assert.end();
+});
+
+test(`Get user state's actions`, (assert) => {
+  reset();
+  const init  = createDict(() => 'Thram');
+  const user  = {INIT: init, TEST: init};
+  const user2 = {INIT: init};
+  register({user, user2});
+  const expected = ['user:INIT', 'user:TEST'],
+        actual   = getActions('user');
+  assert.deepEqual(actual, expected, `Get user's actions`);
   assert.end();
 });
 
