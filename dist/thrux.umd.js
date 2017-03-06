@@ -7607,13 +7607,13 @@ process.umask = function() { return 0; };
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.initState = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.register = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
+exports.initState = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.getActions = exports.register = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _remove2 = __webpack_require__(75);
+var _remove = __webpack_require__(75);
 
-var _remove3 = _interopRequireDefault(_remove2);
+var _remove2 = _interopRequireDefault(_remove);
 
 var _cloneDeep = __webpack_require__(38);
 
@@ -7666,11 +7666,11 @@ function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); } /*
                                                                                */
 
 
-var middlewares = [],
-    dicts = {},
-    observers = {};
+var _middlewares = [],
+    _dicts = {},
+    _observers = {};
 
-var createDict = exports.createDict = function createDict(reducer) {
+var createDict = exports.createDict = function createDict(dispatcher) {
   var map = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (value) {
     return value;
   };
@@ -7678,17 +7678,15 @@ var createDict = exports.createDict = function createDict(reducer) {
     return console.error(err);
   };
   return {
+    dispatcher: dispatcher,
     map: map,
-    reducer: reducer,
     error: error
   };
 };
 
-var baseDict = {
-  INIT: createDict(function () {
+var baseDict = { INIT: createDict(function () {
     return undefined;
-  })
-};
+  }) };
 
 var addObserver = function addObserver(stateKey, funct) {
   var _stateKey$match = stateKey.match(/.+?(?=\.|\[+]|$)/g),
@@ -7696,14 +7694,13 @@ var addObserver = function addObserver(stateKey, funct) {
       mainState = _stateKey$match2[0],
       rest = _stateKey$match2.slice(1);
 
-  observers[mainState] = observers[mainState] || { _global: [] };
-  var _add = function _add(key) {
-    return observers[mainState][key] = (0, _reduce2.default)([funct], function (result, value) {
-      return [].concat(result, [value]);
-    }, observers[mainState][key] || []);
-  };
+  _observers[mainState] = _observers[mainState] || { _global: [] };
 
-  rest.length > 0 ? _add(rest.join('')) : _add('_global');
+  var key = rest.length > 0 ? rest.join('') : '_global';
+
+  _observers[mainState][key] = (0, _reduce2.default)([funct], function (result, value) {
+    return [].concat(result, [value]);
+  }, _observers[mainState][key] || []);
 };
 
 var removeObserver = exports.removeObserver = function removeObserver(stateKey, funct) {
@@ -7712,13 +7709,11 @@ var removeObserver = exports.removeObserver = function removeObserver(stateKey, 
       mainState = _stateKey$match4[0],
       rest = _stateKey$match4.slice(1);
 
-  var _remove = function _remove(key) {
-    return (0, _remove3.default)(observers[mainState][key], function (value) {
-      return (0, _isEqual2.default)(value, funct);
-    });
-  };
+  var key = rest.length > 0 ? rest.join('') : '_global';
 
-  rest.length > 0 ? _remove(rest.join('')) : _remove('_global');
+  (0, _remove2.default)(_observers[mainState][key], function (value) {
+    return (0, _isEqual2.default)(value, funct);
+  });
 };
 
 var processObserver = function processObserver(observer, currentState, actionKey) {
@@ -7728,7 +7723,7 @@ var processObserver = function processObserver(observer, currentState, actionKey
 };
 
 var processObservers = function processObservers(stateKey, currentState, actionKey, prev) {
-  var stateObservers = observers[stateKey],
+  var stateObservers = _observers[stateKey],
       _process = function _process(observers, key) {
     observers && observers.length > 0 && (key === '_global' || !(0, _isEqual2.default)((0, _get2.default)(prev, '' + stateKey + key), (0, _get2.default)(currentState, '' + stateKey + key))) && (0, _forEach2.default)(observers, function (observer) {
       return processObserver(observer, key === '_global' ? currentState : (0, _get2.default)(currentState, '' + stateKey + key), actionKey);
@@ -7738,7 +7733,7 @@ var processObservers = function processObservers(stateKey, currentState, actionK
 };
 
 var processMiddlewares = function processMiddlewares(status) {
-  return (0, _forEach2.default)(middlewares, function (middleware) {
+  return (0, _forEach2.default)(_middlewares, function (middleware) {
     return middleware(status);
   });
 };
@@ -7748,18 +7743,29 @@ var observe = exports.observe = function observe(stateKey, funct) {
 };
 
 var clearObservers = exports.clearObservers = function clearObservers(stateKey) {
-  return observers[stateKey] = undefined;
+  return _observers[stateKey] = undefined;
 };
 
 var register = exports.register = function register(newDicts) {
-  (0, _assign2.default)(dicts, (0, _reduce2.default)(newDicts, function (result, dict, stateKey) {
+  (0, _assign2.default)(_dicts, (0, _reduce2.default)(newDicts, function (result, dict, stateKey) {
     return (0, _set2.default)(result, stateKey, (0, _assign2.default)({}, baseDict, dict));
   }, {}));
   (0, _forEach2.default)((0, _keys2.default)(newDicts), initState);
 };
 
+var getActions = exports.getActions = function getActions(stateKeys) {
+  var getStateActions = function getStateActions(state) {
+    return (0, _map2.default)((0, _keys2.default)(_dicts[state]), function (action) {
+      return state + ':' + action;
+    });
+  };
+  return stateKeys ? getStateActions(stateKeys) : (0, _reduce2.default)(_dicts, function (result, _dict, state) {
+    return result.concat(getStateActions(state));
+  }, []);
+};
+
 var addMiddleware = exports.addMiddleware = function addMiddleware(middleware) {
-  return (0, _isArray2.default)(middleware) ? middlewares = [].concat(middlewares, middleware) : middlewares.push(middleware);
+  return (0, _isArray2.default)(middleware) ? _middlewares = [].concat(_middlewares, middleware) : _middlewares.push(middleware);
 };
 
 var processAction = function processAction(_ref) {
@@ -7781,7 +7787,7 @@ var dispatchAction = function dispatchAction(keyType, data) {
       _keyType$split2 = _slicedToArray(_keyType$split, 2),
       state = _keyType$split2[0],
       action = _keyType$split2[1],
-      dict = (0, _get2.default)(dicts, state + '.' + action);
+      dict = (0, _get2.default)(_dicts, state + '.' + action);
 
   if (dict) {
     try {
@@ -7793,7 +7799,7 @@ var dispatchAction = function dispatchAction(keyType, data) {
           return nextValue && nextValue.then ? nextValue.then(processNext, dict.error) : processAction({ state: state, action: action, prev: prev, payload: payload, next: nextValue });
         };
 
-        processNext(dict.reducer(payload, (0, _cloneDeep2.default)(prev)));
+        processNext(dict.dispatcher(payload, (0, _cloneDeep2.default)(prev)));
       })();
     } catch (e) {
       dict.error(e);
@@ -7809,9 +7815,9 @@ var dispatch = exports.dispatch = function dispatch(keyType, data) {
 var state = exports.state = _store.getState;
 
 var reset = exports.reset = function reset() {
-  middlewares = [];
-  dicts = {};
-  observers = {};
+  _middlewares = [];
+  _dicts = {};
+  _observers = {};
   (0, _store.clearStore)();
 };
 
