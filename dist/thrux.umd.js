@@ -2270,7 +2270,7 @@ var setState = exports.setState = function setState(key, value) {
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
  * @license   Licensed under MIT license
  *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   4.0.5
+ * @version   4.1.0
  */
 
 (function (global, factory) {
@@ -2578,6 +2578,7 @@ function handleMaybeThenable(promise, maybeThenable, then$$) {
   } else {
     if (then$$ === GET_THEN_ERROR) {
       _reject(promise, GET_THEN_ERROR.error);
+      GET_THEN_ERROR.error = null;
     } else if (then$$ === undefined) {
       fulfill(promise, maybeThenable);
     } else if (isFunction(then$$)) {
@@ -2698,7 +2699,7 @@ function invokeCallback(settled, promise, callback, detail) {
     if (value === TRY_CATCH_ERROR) {
       failed = true;
       error = value.error;
-      value = null;
+      value.error = null;
     } else {
       succeeded = true;
     }
@@ -3422,6 +3423,7 @@ return Promise;
 
 })));
 //# sourceMappingURL=es6-promise.map
+
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(188), __webpack_require__(67)))
 
 /***/ }),
@@ -7711,7 +7713,7 @@ var removeObserver = exports.removeObserver = function removeObserver(stateKey, 
 
   var key = rest.length > 0 ? rest.join('') : '_global';
 
-  (0, _remove2.default)(_observers[mainState][key], function (value) {
+  _observers[mainState] && (0, _remove2.default)(_observers[mainState][key], function (value) {
     return (0, _isEqual2.default)(value, funct);
   });
 };

@@ -46,7 +46,7 @@ export const removeObserver = (stateKey, funct) => {
 
   const key = rest.length > 0 ? rest.join('') : '_global';
 
-  remove(_observers[mainState][key], (value) => isEqual(value, funct));
+  _observers[mainState] && remove(_observers[mainState][key], (value) => isEqual(value, funct));
 };
 
 const processObserver = (observer, currentState, actionKey) => new Promise((resolve, reject) => (observer(currentState, actionKey), resolve()));

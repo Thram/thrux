@@ -107,7 +107,7 @@ var removeObserver = exports.removeObserver = function removeObserver(stateKey, 
 
   var key = rest.length > 0 ? rest.join('') : '_global';
 
-  (0, _remove2.default)(_observers[mainState][key], function (value) {
+  _observers[mainState] && (0, _remove2.default)(_observers[mainState][key], function (value) {
     return (0, _isEqual2.default)(value, funct);
   });
 };
