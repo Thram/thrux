@@ -91,16 +91,16 @@ return /******/ (function(modules) { // webpackBootstrap
  * @returns {boolean} Returns `true` if `value` is an array, else `false`.
  * @example
  *
- * _.isArray([1, 2, 3]);
+ * _._isArray([1, 2, 3]);
  * // => true
  *
- * _.isArray(document.body.children);
+ * _._isArray(document.body.children);
  * // => false
  *
- * _.isArray('abc');
+ * _._isArray('abc');
  * // => false
  *
- * _.isArray(_.noop);
+ * _._isArray(_.noop);
  * // => false
  */
 var isArray = Array.isArray;
@@ -973,10 +973,10 @@ module.exports = baseIteratee;
 var Uint8Array = __webpack_require__(40);
 
 /**
- * Creates a clone of `arrayBuffer`.
+ * Creates a _clone of `arrayBuffer`.
  *
  * @private
- * @param {ArrayBuffer} arrayBuffer The array buffer to clone.
+ * @param {ArrayBuffer} arrayBuffer The array buffer to _clone.
  * @returns {ArrayBuffer} Returns the cloned array buffer.
  */
 function cloneArrayBuffer(arrayBuffer) {
@@ -1261,13 +1261,13 @@ var CLONE_DEEP_FLAG = 1,
     CLONE_SYMBOLS_FLAG = 4;
 
 /**
- * This method is like `_.clone` except that it recursively clones `value`.
+ * This method is like `_._clone` except that it recursively clones `value`.
  *
  * @static
  * @memberOf _
  * @since 1.0.0
  * @category Lang
- * @param {*} value The value to recursively clone.
+ * @param {*} value The value to recursively _clone.
  * @returns {*} Returns the deep cloned value.
  * @see _.clone
  * @example
@@ -4150,7 +4150,7 @@ var arrayBufferTag = '[object ArrayBuffer]',
     uint16Tag = '[object Uint16Array]',
     uint32Tag = '[object Uint32Array]';
 
-/** Used to identify `toStringTag` values supported by `_.clone`. */
+/** Used to identify `toStringTag` values supported by `_._clone`. */
 var cloneableTags = {};
 cloneableTags[argsTag] = cloneableTags[arrayTag] =
 cloneableTags[arrayBufferTag] = cloneableTags[dataViewTag] =
@@ -4167,19 +4167,19 @@ cloneableTags[errorTag] = cloneableTags[funcTag] =
 cloneableTags[weakMapTag] = false;
 
 /**
- * The base implementation of `_.clone` and `_.cloneDeep` which tracks
+ * The base implementation of `_._clone` and `_.cloneDeep` which tracks
  * traversed objects.
  *
  * @private
- * @param {*} value The value to clone.
+ * @param {*} value The value to _clone.
  * @param {boolean} bitmask The bitmask flags.
- *  1 - Deep clone
+ *  1 - Deep _clone
  *  2 - Flatten inherited properties
  *  4 - Clone symbols
  * @param {Function} [customizer] The function to customize cloning.
  * @param {string} [key] The key of `value`.
  * @param {Object} [object] The parent object of `value`.
- * @param {Object} [stack] Tracks traversed objects and their clone counterparts.
+ * @param {Object} [stack] Tracks traversed objects and their _clone counterparts.
  * @returns {*} Returns the cloned value.
  */
 function baseClone(value, bitmask, customizer, key, object, stack) {
@@ -4224,7 +4224,7 @@ function baseClone(value, bitmask, customizer, key, object, stack) {
       result = initCloneByTag(value, tag, baseClone, isDeep);
     }
   }
-  // Check for circular references and return its corresponding clone.
+  // Check for circular references and return its corresponding _clone.
   stack || (stack = new Stack);
   var stacked = stack.get(value);
   if (stacked) {
@@ -4242,7 +4242,7 @@ function baseClone(value, bitmask, customizer, key, object, stack) {
       key = subValue;
       subValue = value[key];
     }
-    // Recursively populate clone (susceptible to call stack limits).
+    // Recursively populate _clone (susceptible to call stack limits).
     assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack));
   });
   return result;
@@ -4806,7 +4806,7 @@ var baseIsMatch = __webpack_require__(98),
     matchesStrictComparable = __webpack_require__(56);
 
 /**
- * The base implementation of `_.matches` which doesn't clone `source`.
+ * The base implementation of `_.matches` which doesn't _clone `source`.
  *
  * @private
  * @param {Object} source The object of property values to match.
@@ -4842,7 +4842,7 @@ var COMPARE_PARTIAL_FLAG = 1,
     COMPARE_UNORDERED_FLAG = 2;
 
 /**
- * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
+ * The base implementation of `_.matchesProperty` which doesn't _clone `srcValue`.
  *
  * @private
  * @param {string} path The path of the property to get.
@@ -4872,12 +4872,12 @@ var basePickBy = __webpack_require__(107),
     hasIn = __webpack_require__(62);
 
 /**
- * The base implementation of `_.pick` without support for individual
+ * The base implementation of `_._pick` without support for individual
  * property identifiers.
  *
  * @private
  * @param {Object} object The source object.
- * @param {string[]} paths The property paths to pick.
+ * @param {string[]} paths The property paths to _pick.
  * @returns {Object} Returns the new object.
  */
 function basePick(object, paths) {
@@ -4902,7 +4902,7 @@ var baseGet = __webpack_require__(16),
  *
  * @private
  * @param {Object} object The source object.
- * @param {string[]} paths The property paths to pick.
+ * @param {string[]} paths The property paths to _pick.
  * @param {Function} predicate The function invoked per property.
  * @returns {Object} Returns the new object.
  */
@@ -5301,11 +5301,11 @@ var Buffer = moduleExports ? root.Buffer : undefined,
     allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined;
 
 /**
- * Creates a clone of  `buffer`.
+ * Creates a _clone of  `buffer`.
  *
  * @private
- * @param {Buffer} buffer The buffer to clone.
- * @param {boolean} [isDeep] Specify a deep clone.
+ * @param {Buffer} buffer The buffer to _clone.
+ * @param {boolean} [isDeep] Specify a deep _clone.
  * @returns {Buffer} Returns the cloned buffer.
  */
 function cloneBuffer(buffer, isDeep) {
@@ -5330,11 +5330,11 @@ module.exports = cloneBuffer;
 var cloneArrayBuffer = __webpack_require__(30);
 
 /**
- * Creates a clone of `dataView`.
+ * Creates a _clone of `dataView`.
  *
  * @private
- * @param {Object} dataView The data view to clone.
- * @param {boolean} [isDeep] Specify a deep clone.
+ * @param {Object} dataView The data view to _clone.
+ * @param {boolean} [isDeep] Specify a deep _clone.
  * @returns {Object} Returns the cloned data view.
  */
 function cloneDataView(dataView, isDeep) {
@@ -5357,12 +5357,12 @@ var addMapEntry = __webpack_require__(83),
 var CLONE_DEEP_FLAG = 1;
 
 /**
- * Creates a clone of `map`.
+ * Creates a _clone of `map`.
  *
  * @private
- * @param {Object} map The map to clone.
- * @param {Function} cloneFunc The function to clone values.
- * @param {boolean} [isDeep] Specify a deep clone.
+ * @param {Object} map The map to _clone.
+ * @param {Function} cloneFunc The function to _clone values.
+ * @param {boolean} [isDeep] Specify a deep _clone.
  * @returns {Object} Returns the cloned map.
  */
 function cloneMap(map, isDeep, cloneFunc) {
@@ -5381,10 +5381,10 @@ module.exports = cloneMap;
 var reFlags = /\w*$/;
 
 /**
- * Creates a clone of `regexp`.
+ * Creates a _clone of `regexp`.
  *
  * @private
- * @param {Object} regexp The regexp to clone.
+ * @param {Object} regexp The regexp to _clone.
  * @returns {Object} Returns the cloned regexp.
  */
 function cloneRegExp(regexp) {
@@ -5408,12 +5408,12 @@ var addSetEntry = __webpack_require__(84),
 var CLONE_DEEP_FLAG = 1;
 
 /**
- * Creates a clone of `set`.
+ * Creates a _clone of `set`.
  *
  * @private
- * @param {Object} set The set to clone.
- * @param {Function} cloneFunc The function to clone values.
- * @param {boolean} [isDeep] Specify a deep clone.
+ * @param {Object} set The set to _clone.
+ * @param {Function} cloneFunc The function to _clone values.
+ * @param {boolean} [isDeep] Specify a deep _clone.
  * @returns {Object} Returns the cloned set.
  */
 function cloneSet(set, isDeep, cloneFunc) {
@@ -5435,10 +5435,10 @@ var symbolProto = Symbol ? Symbol.prototype : undefined,
     symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
 
 /**
- * Creates a clone of the `symbol` object.
+ * Creates a _clone of the `symbol` object.
  *
  * @private
- * @param {Object} symbol The symbol object to clone.
+ * @param {Object} symbol The symbol object to _clone.
  * @returns {Object} Returns the cloned symbol object.
  */
 function cloneSymbol(symbol) {
@@ -5455,11 +5455,11 @@ module.exports = cloneSymbol;
 var cloneArrayBuffer = __webpack_require__(30);
 
 /**
- * Creates a clone of `typedArray`.
+ * Creates a _clone of `typedArray`.
  *
  * @private
- * @param {Object} typedArray The typed array to clone.
- * @param {boolean} [isDeep] Specify a deep clone.
+ * @param {Object} typedArray The typed array to _clone.
+ * @param {boolean} [isDeep] Specify a deep _clone.
  * @returns {Object} Returns the cloned typed array.
  */
 function cloneTypedArray(typedArray, isDeep) {
@@ -6217,11 +6217,11 @@ var objectProto = Object.prototype;
 var hasOwnProperty = objectProto.hasOwnProperty;
 
 /**
- * Initializes an array clone.
+ * Initializes an array _clone.
  *
  * @private
- * @param {Array} array The array to clone.
- * @returns {Array} Returns the initialized clone.
+ * @param {Array} array The array to _clone.
+ * @returns {Array} Returns the initialized _clone.
  */
 function initCloneArray(array) {
   var length = array.length,
@@ -6273,17 +6273,17 @@ var arrayBufferTag = '[object ArrayBuffer]',
     uint32Tag = '[object Uint32Array]';
 
 /**
- * Initializes an object clone based on its `toStringTag`.
+ * Initializes an object _clone based on its `toStringTag`.
  *
  * **Note:** This function only supports cloning values with tags of
  * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
  *
  * @private
- * @param {Object} object The object to clone.
- * @param {string} tag The `toStringTag` of the object to clone.
- * @param {Function} cloneFunc The function to clone values.
- * @param {boolean} [isDeep] Specify a deep clone.
- * @returns {Object} Returns the initialized clone.
+ * @param {Object} object The object to _clone.
+ * @param {string} tag The `toStringTag` of the object to _clone.
+ * @param {Function} cloneFunc The function to _clone values.
+ * @param {boolean} [isDeep] Specify a deep _clone.
+ * @returns {Object} Returns the initialized _clone.
  */
 function initCloneByTag(object, tag, cloneFunc, isDeep) {
   var Ctor = object.constructor;
@@ -6333,11 +6333,11 @@ var baseCreate = __webpack_require__(91),
     isPrototype = __webpack_require__(18);
 
 /**
- * Initializes an object clone.
+ * Initializes an object _clone.
  *
  * @private
- * @param {Object} object The object to clone.
- * @returns {Object} Returns the initialized clone.
+ * @param {Object} object The object to _clone.
+ * @returns {Object} Returns the initialized _clone.
  */
 function initCloneObject(object) {
   return (typeof object.constructor == 'function' && !isPrototype(object))
@@ -7295,13 +7295,13 @@ var basePick = __webpack_require__(106),
  * @memberOf _
  * @category Object
  * @param {Object} object The source object.
- * @param {...(string|string[])} [paths] The property paths to pick.
+ * @param {...(string|string[])} [paths] The property paths to _pick.
  * @returns {Object} Returns the new object.
  * @example
  *
  * var object = { 'a': 1, 'b': '2', 'c': 3 };
  *
- * _.pick(object, ['a', 'c']);
+ * _._pick(object, ['a', 'c']);
  * // => { 'a': 1, 'c': 3 }
  */
 var pick = flatRest(function(object, paths) {

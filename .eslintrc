@@ -1,0 +1,21 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "walmart"
+  ],
+  "rules": {
+    "no-console": 0,
+    "max-len": [
+      1,
+      120,
+      4,
+      {
+        "ignoreUrls": true
+      }
+    ]
+  },
+  "env": {
+    "browser": true,
+    "es6": true
+  }
+}
