@@ -7,7 +7,7 @@ To contribute to the project, please follow these steps:
 3. Make a branch for your change
 4. Run `npm install` or `yarn`
 5. Run `npm t` or `yarn test`
-6. Make your changes
+6. Make your changes (Use [AirBnb Style Guide](https://github.com/airbnb/javascript))
 7. Test your changes (we have a githook that disallows anything less than 100% code coverage)
 8. Run `git add -A` to add your changes (please don't add any changes to the `dist` directory).
 9. Run `npm run commit` or `yarn commit` (**Do not** use `git commit`) - follow the prompts to create your git message
