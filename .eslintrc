@@ -1,18 +1,10 @@
 {
   "parser": "babel-eslint",
   "extends": [
-    "walmart"
+    "airbnb"
   ],
   "rules": {
-    "no-console": 0,
-    "max-len": [
-      1,
-      120,
-      4,
-      {
-        "ignoreUrls": true
-      }
-    ]
+    "no-console": 0
   },
   "env": {
     "browser": true,

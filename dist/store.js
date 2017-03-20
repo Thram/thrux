@@ -5,13 +5,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.setState = exports.getState = exports.clearStore = undefined;
 
-var _pick = require('lodash/pick');
+var _pick2 = require('lodash/pick');
 
-var _pick2 = _interopRequireDefault(_pick);
+var _pick3 = _interopRequireDefault(_pick2);
 
-var _isArray = require('lodash/isArray');
+var _isArray2 = require('lodash/isArray');
 
-var _isArray2 = _interopRequireDefault(_isArray);
+var _isArray3 = _interopRequireDefault(_isArray2);
 
 var _cloneDeep = require('lodash/cloneDeep');
 
@@ -23,11 +23,17 @@ var store = {}; /**
                  * Created by thram on 16/01/17.
                  */
 var clearStore = exports.clearStore = function clearStore() {
-  return store = {};
+  store = {};
 };
+
+var pickState = function pickState(key) {
+  return (0, _isArray3.default)(key) ? (0, _pick3.default)(store, key) : store[key];
+};
+
 var getState = exports.getState = function getState(key) {
-  return (0, _cloneDeep2.default)(key ? (0, _isArray2.default)(key) ? (0, _pick2.default)(store, key) : store[key] : store);
+  return (0, _cloneDeep2.default)(key ? pickState(key) : store);
 };
+
 var setState = exports.setState = function setState(key, value) {
-  return store[key] = value;
+  store[key] = value;
 };

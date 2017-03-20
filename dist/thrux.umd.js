@@ -91,16 +91,16 @@ return /******/ (function(modules) { // webpackBootstrap
  * @returns {boolean} Returns `true` if `value` is an array, else `false`.
  * @example
  *
- * _._isArray([1, 2, 3]);
+ * _.isArray([1, 2, 3]);
  * // => true
  *
- * _._isArray(document.body.children);
+ * _.isArray(document.body.children);
  * // => false
  *
- * _._isArray('abc');
+ * _.isArray('abc');
  * // => false
  *
- * _._isArray(_.noop);
+ * _.isArray(_.noop);
  * // => false
  */
 var isArray = Array.isArray;
@@ -973,10 +973,10 @@ module.exports = baseIteratee;
 var Uint8Array = __webpack_require__(40);
 
 /**
- * Creates a _clone of `arrayBuffer`.
+ * Creates a clone of `arrayBuffer`.
  *
  * @private
- * @param {ArrayBuffer} arrayBuffer The array buffer to _clone.
+ * @param {ArrayBuffer} arrayBuffer The array buffer to clone.
  * @returns {ArrayBuffer} Returns the cloned array buffer.
  */
 function cloneArrayBuffer(arrayBuffer) {
@@ -1261,13 +1261,13 @@ var CLONE_DEEP_FLAG = 1,
     CLONE_SYMBOLS_FLAG = 4;
 
 /**
- * This method is like `_._clone` except that it recursively clones `value`.
+ * This method is like `_.clone` except that it recursively clones `value`.
  *
  * @static
  * @memberOf _
  * @since 1.0.0
  * @category Lang
- * @param {*} value The value to recursively _clone.
+ * @param {*} value The value to recursively clone.
  * @returns {*} Returns the deep cloned value.
  * @see _.clone
  * @example
@@ -2234,13 +2234,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.setState = exports.getState = exports.clearStore = undefined;
 
-var _pick = __webpack_require__(184);
+var _pick2 = __webpack_require__(184);
 
-var _pick2 = _interopRequireDefault(_pick);
+var _pick3 = _interopRequireDefault(_pick2);
 
-var _isArray = __webpack_require__(0);
+var _isArray2 = __webpack_require__(0);
 
-var _isArray2 = _interopRequireDefault(_isArray);
+var _isArray3 = _interopRequireDefault(_isArray2);
 
 var _cloneDeep = __webpack_require__(38);
 
@@ -2252,13 +2252,19 @@ var store = {}; /**
                  * Created by thram on 16/01/17.
                  */
 var clearStore = exports.clearStore = function clearStore() {
-  return store = {};
+  store = {};
 };
+
+var pickState = function pickState(key) {
+  return (0, _isArray3.default)(key) ? (0, _pick3.default)(store, key) : store[key];
+};
+
 var getState = exports.getState = function getState(key) {
-  return (0, _cloneDeep2.default)(key ? (0, _isArray2.default)(key) ? (0, _pick2.default)(store, key) : store[key] : store);
+  return (0, _cloneDeep2.default)(key ? pickState(key) : store);
 };
+
 var setState = exports.setState = function setState(key, value) {
-  return store[key] = value;
+  store[key] = value;
 };
 
 /***/ }),
@@ -4150,7 +4156,7 @@ var arrayBufferTag = '[object ArrayBuffer]',
     uint16Tag = '[object Uint16Array]',
     uint32Tag = '[object Uint32Array]';
 
-/** Used to identify `toStringTag` values supported by `_._clone`. */
+/** Used to identify `toStringTag` values supported by `_.clone`. */
 var cloneableTags = {};
 cloneableTags[argsTag] = cloneableTags[arrayTag] =
 cloneableTags[arrayBufferTag] = cloneableTags[dataViewTag] =
@@ -4167,19 +4173,19 @@ cloneableTags[errorTag] = cloneableTags[funcTag] =
 cloneableTags[weakMapTag] = false;
 
 /**
- * The base implementation of `_._clone` and `_.cloneDeep` which tracks
+ * The base implementation of `_.clone` and `_.cloneDeep` which tracks
  * traversed objects.
  *
  * @private
- * @param {*} value The value to _clone.
+ * @param {*} value The value to clone.
  * @param {boolean} bitmask The bitmask flags.
- *  1 - Deep _clone
+ *  1 - Deep clone
  *  2 - Flatten inherited properties
  *  4 - Clone symbols
  * @param {Function} [customizer] The function to customize cloning.
  * @param {string} [key] The key of `value`.
  * @param {Object} [object] The parent object of `value`.
- * @param {Object} [stack] Tracks traversed objects and their _clone counterparts.
+ * @param {Object} [stack] Tracks traversed objects and their clone counterparts.
  * @returns {*} Returns the cloned value.
  */
 function baseClone(value, bitmask, customizer, key, object, stack) {
@@ -4224,7 +4230,7 @@ function baseClone(value, bitmask, customizer, key, object, stack) {
       result = initCloneByTag(value, tag, baseClone, isDeep);
     }
   }
-  // Check for circular references and return its corresponding _clone.
+  // Check for circular references and return its corresponding clone.
   stack || (stack = new Stack);
   var stacked = stack.get(value);
   if (stacked) {
@@ -4242,7 +4248,7 @@ function baseClone(value, bitmask, customizer, key, object, stack) {
       key = subValue;
       subValue = value[key];
     }
-    // Recursively populate _clone (susceptible to call stack limits).
+    // Recursively populate clone (susceptible to call stack limits).
     assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack));
   });
   return result;
@@ -4806,7 +4812,7 @@ var baseIsMatch = __webpack_require__(98),
     matchesStrictComparable = __webpack_require__(56);
 
 /**
- * The base implementation of `_.matches` which doesn't _clone `source`.
+ * The base implementation of `_.matches` which doesn't clone `source`.
  *
  * @private
  * @param {Object} source The object of property values to match.
@@ -4842,7 +4848,7 @@ var COMPARE_PARTIAL_FLAG = 1,
     COMPARE_UNORDERED_FLAG = 2;
 
 /**
- * The base implementation of `_.matchesProperty` which doesn't _clone `srcValue`.
+ * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
  *
  * @private
  * @param {string} path The path of the property to get.
@@ -4872,12 +4878,12 @@ var basePickBy = __webpack_require__(107),
     hasIn = __webpack_require__(62);
 
 /**
- * The base implementation of `_._pick` without support for individual
+ * The base implementation of `_.pick` without support for individual
  * property identifiers.
  *
  * @private
  * @param {Object} object The source object.
- * @param {string[]} paths The property paths to _pick.
+ * @param {string[]} paths The property paths to pick.
  * @returns {Object} Returns the new object.
  */
 function basePick(object, paths) {
@@ -4902,7 +4908,7 @@ var baseGet = __webpack_require__(16),
  *
  * @private
  * @param {Object} object The source object.
- * @param {string[]} paths The property paths to _pick.
+ * @param {string[]} paths The property paths to pick.
  * @param {Function} predicate The function invoked per property.
  * @returns {Object} Returns the new object.
  */
@@ -5301,11 +5307,11 @@ var Buffer = moduleExports ? root.Buffer : undefined,
     allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined;
 
 /**
- * Creates a _clone of  `buffer`.
+ * Creates a clone of  `buffer`.
  *
  * @private
- * @param {Buffer} buffer The buffer to _clone.
- * @param {boolean} [isDeep] Specify a deep _clone.
+ * @param {Buffer} buffer The buffer to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
  * @returns {Buffer} Returns the cloned buffer.
  */
 function cloneBuffer(buffer, isDeep) {
@@ -5330,11 +5336,11 @@ module.exports = cloneBuffer;
 var cloneArrayBuffer = __webpack_require__(30);
 
 /**
- * Creates a _clone of `dataView`.
+ * Creates a clone of `dataView`.
  *
  * @private
- * @param {Object} dataView The data view to _clone.
- * @param {boolean} [isDeep] Specify a deep _clone.
+ * @param {Object} dataView The data view to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
  * @returns {Object} Returns the cloned data view.
  */
 function cloneDataView(dataView, isDeep) {
@@ -5357,12 +5363,12 @@ var addMapEntry = __webpack_require__(83),
 var CLONE_DEEP_FLAG = 1;
 
 /**
- * Creates a _clone of `map`.
+ * Creates a clone of `map`.
  *
  * @private
- * @param {Object} map The map to _clone.
- * @param {Function} cloneFunc The function to _clone values.
- * @param {boolean} [isDeep] Specify a deep _clone.
+ * @param {Object} map The map to clone.
+ * @param {Function} cloneFunc The function to clone values.
+ * @param {boolean} [isDeep] Specify a deep clone.
  * @returns {Object} Returns the cloned map.
  */
 function cloneMap(map, isDeep, cloneFunc) {
@@ -5381,10 +5387,10 @@ module.exports = cloneMap;
 var reFlags = /\w*$/;
 
 /**
- * Creates a _clone of `regexp`.
+ * Creates a clone of `regexp`.
  *
  * @private
- * @param {Object} regexp The regexp to _clone.
+ * @param {Object} regexp The regexp to clone.
  * @returns {Object} Returns the cloned regexp.
  */
 function cloneRegExp(regexp) {
@@ -5408,12 +5414,12 @@ var addSetEntry = __webpack_require__(84),
 var CLONE_DEEP_FLAG = 1;
 
 /**
- * Creates a _clone of `set`.
+ * Creates a clone of `set`.
  *
  * @private
- * @param {Object} set The set to _clone.
- * @param {Function} cloneFunc The function to _clone values.
- * @param {boolean} [isDeep] Specify a deep _clone.
+ * @param {Object} set The set to clone.
+ * @param {Function} cloneFunc The function to clone values.
+ * @param {boolean} [isDeep] Specify a deep clone.
  * @returns {Object} Returns the cloned set.
  */
 function cloneSet(set, isDeep, cloneFunc) {
@@ -5435,10 +5441,10 @@ var symbolProto = Symbol ? Symbol.prototype : undefined,
     symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
 
 /**
- * Creates a _clone of the `symbol` object.
+ * Creates a clone of the `symbol` object.
  *
  * @private
- * @param {Object} symbol The symbol object to _clone.
+ * @param {Object} symbol The symbol object to clone.
  * @returns {Object} Returns the cloned symbol object.
  */
 function cloneSymbol(symbol) {
@@ -5455,11 +5461,11 @@ module.exports = cloneSymbol;
 var cloneArrayBuffer = __webpack_require__(30);
 
 /**
- * Creates a _clone of `typedArray`.
+ * Creates a clone of `typedArray`.
  *
  * @private
- * @param {Object} typedArray The typed array to _clone.
- * @param {boolean} [isDeep] Specify a deep _clone.
+ * @param {Object} typedArray The typed array to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
  * @returns {Object} Returns the cloned typed array.
  */
 function cloneTypedArray(typedArray, isDeep) {
@@ -6217,11 +6223,11 @@ var objectProto = Object.prototype;
 var hasOwnProperty = objectProto.hasOwnProperty;
 
 /**
- * Initializes an array _clone.
+ * Initializes an array clone.
  *
  * @private
- * @param {Array} array The array to _clone.
- * @returns {Array} Returns the initialized _clone.
+ * @param {Array} array The array to clone.
+ * @returns {Array} Returns the initialized clone.
  */
 function initCloneArray(array) {
   var length = array.length,
@@ -6273,17 +6279,17 @@ var arrayBufferTag = '[object ArrayBuffer]',
     uint32Tag = '[object Uint32Array]';
 
 /**
- * Initializes an object _clone based on its `toStringTag`.
+ * Initializes an object clone based on its `toStringTag`.
  *
  * **Note:** This function only supports cloning values with tags of
  * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
  *
  * @private
- * @param {Object} object The object to _clone.
- * @param {string} tag The `toStringTag` of the object to _clone.
- * @param {Function} cloneFunc The function to _clone values.
- * @param {boolean} [isDeep] Specify a deep _clone.
- * @returns {Object} Returns the initialized _clone.
+ * @param {Object} object The object to clone.
+ * @param {string} tag The `toStringTag` of the object to clone.
+ * @param {Function} cloneFunc The function to clone values.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the initialized clone.
  */
 function initCloneByTag(object, tag, cloneFunc, isDeep) {
   var Ctor = object.constructor;
@@ -6333,11 +6339,11 @@ var baseCreate = __webpack_require__(91),
     isPrototype = __webpack_require__(18);
 
 /**
- * Initializes an object _clone.
+ * Initializes an object clone.
  *
  * @private
- * @param {Object} object The object to _clone.
- * @returns {Object} Returns the initialized _clone.
+ * @param {Object} object The object to clone.
+ * @returns {Object} Returns the initialized clone.
  */
 function initCloneObject(object) {
   return (typeof object.constructor == 'function' && !isPrototype(object))
@@ -7295,13 +7301,13 @@ var basePick = __webpack_require__(106),
  * @memberOf _
  * @category Object
  * @param {Object} object The source object.
- * @param {...(string|string[])} [paths] The property paths to _pick.
+ * @param {...(string|string[])} [paths] The property paths to pick.
  * @returns {Object} Returns the new object.
  * @example
  *
  * var object = { 'a': 1, 'b': '2', 'c': 3 };
  *
- * _._pick(object, ['a', 'c']);
+ * _.pick(object, ['a', 'c']);
  * // => { 'a': 1, 'c': 3 }
  */
 var pick = flatRest(function(object, paths) {
@@ -7609,53 +7615,53 @@ process.umask = function() { return 0; };
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.initState = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.getActions = exports.register = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
+exports.register = exports.initState = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.getActions = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _remove = __webpack_require__(75);
+var _remove2 = __webpack_require__(75);
 
-var _remove2 = _interopRequireDefault(_remove);
+var _remove3 = _interopRequireDefault(_remove2);
 
 var _cloneDeep = __webpack_require__(38);
 
 var _cloneDeep2 = _interopRequireDefault(_cloneDeep);
 
-var _get = __webpack_require__(39);
+var _get2 = __webpack_require__(39);
 
-var _get2 = _interopRequireDefault(_get);
+var _get3 = _interopRequireDefault(_get2);
 
-var _set = __webpack_require__(76);
+var _set2 = __webpack_require__(76);
 
-var _set2 = _interopRequireDefault(_set);
+var _set3 = _interopRequireDefault(_set2);
 
-var _keys = __webpack_require__(3);
+var _keys2 = __webpack_require__(3);
 
-var _keys2 = _interopRequireDefault(_keys);
+var _keys3 = _interopRequireDefault(_keys2);
 
-var _map = __webpack_require__(73);
+var _map2 = __webpack_require__(73);
 
-var _map2 = _interopRequireDefault(_map);
+var _map3 = _interopRequireDefault(_map2);
 
-var _reduce = __webpack_require__(74);
+var _reduce2 = __webpack_require__(74);
 
-var _reduce2 = _interopRequireDefault(_reduce);
+var _reduce3 = _interopRequireDefault(_reduce2);
 
-var _assign = __webpack_require__(70);
+var _assign2 = __webpack_require__(70);
 
-var _assign2 = _interopRequireDefault(_assign);
+var _assign3 = _interopRequireDefault(_assign2);
 
-var _isEqual = __webpack_require__(72);
+var _isEqual2 = __webpack_require__(72);
 
-var _isEqual2 = _interopRequireDefault(_isEqual);
+var _isEqual3 = _interopRequireDefault(_isEqual2);
 
-var _isArray = __webpack_require__(0);
+var _isArray2 = __webpack_require__(0);
 
-var _isArray2 = _interopRequireDefault(_isArray);
+var _isArray3 = _interopRequireDefault(_isArray2);
 
-var _forEach = __webpack_require__(71);
+var _forEach2 = __webpack_require__(71);
 
-var _forEach2 = _interopRequireDefault(_forEach);
+var _forEach3 = _interopRequireDefault(_forEach2);
 
 var _es6Promise = __webpack_require__(69);
 
@@ -7668,17 +7674,20 @@ function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); } /*
                                                                                */
 
 
-var _middlewares = [],
-    _dicts = {},
-    _observers = {};
+var middlewares = [];
+var dicts = {};
+var observers = {};
+
+var defaultMap = function defaultMap(value) {
+  return value;
+};
+var defaultError = function defaultError(err) {
+  return console.error(err);
+};
 
 var createDict = exports.createDict = function createDict(dispatcher) {
-  var map = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (value) {
-    return value;
-  };
-  var error = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (err) {
-    return console.error(err);
-  };
+  var map = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultMap;
+  var error = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : defaultError;
   return {
     dispatcher: dispatcher,
     map: map,
@@ -7696,13 +7705,13 @@ var addObserver = function addObserver(stateKey, funct) {
       mainState = _stateKey$match2[0],
       rest = _stateKey$match2.slice(1);
 
-  _observers[mainState] = _observers[mainState] || { _global: [] };
+  observers[mainState] = observers[mainState] || { _global: [] };
 
   var key = rest.length > 0 ? rest.join('') : '_global';
 
-  _observers[mainState][key] = (0, _reduce2.default)([funct], function (result, value) {
+  observers[mainState][key] = (0, _reduce3.default)([funct], function (result, value) {
     return [].concat(result, [value]);
-  }, _observers[mainState][key] || []);
+  }, observers[mainState][key] || []);
 };
 
 var removeObserver = exports.removeObserver = function removeObserver(stateKey, funct) {
@@ -7713,29 +7722,45 @@ var removeObserver = exports.removeObserver = function removeObserver(stateKey, 
 
   var key = rest.length > 0 ? rest.join('') : '_global';
 
-  _observers[mainState] && (0, _remove2.default)(_observers[mainState][key], function (value) {
-    return (0, _isEqual2.default)(value, funct);
-  });
+  if (observers[mainState]) {
+    (0, _remove3.default)(observers[mainState][key], function (value) {
+      return (0, _isEqual3.default)(value, funct);
+    });
+  }
 };
 
 var processObserver = function processObserver(observer, currentState, actionKey) {
-  return new _es6Promise.Promise(function (resolve, reject) {
-    return observer(currentState, actionKey), resolve();
+  return new _es6Promise.Promise(function (resolve) {
+    observer(currentState, actionKey);
+    resolve();
   });
 };
 
-var processObservers = function processObservers(stateKey, currentState, actionKey, prev) {
-  var stateObservers = _observers[stateKey],
-      _process = function _process(observers, key) {
-    observers && observers.length > 0 && (key === '_global' || !(0, _isEqual2.default)((0, _get2.default)(prev, '' + stateKey + key), (0, _get2.default)(currentState, '' + stateKey + key))) && (0, _forEach2.default)(observers, function (observer) {
-      return processObserver(observer, key === '_global' ? currentState : (0, _get2.default)(currentState, '' + stateKey + key), actionKey);
-    });
+var processObservers = function processObservers(_ref) {
+  var stateKey = _ref.stateKey,
+      currentState = _ref.currentState,
+      actionKey = _ref.actionKey,
+      prev = _ref.prev;
+
+  var stateObservers = observers[stateKey];
+  var hasChanged = function hasChanged(key) {
+    return !(0, _isEqual3.default)((0, _get3.default)(prev, '' + stateKey + key), (0, _get3.default)(currentState, '' + stateKey + key));
   };
-  (0, _forEach2.default)(stateObservers, _process);
+  var mustProcess = function mustProcess(key) {
+    return key === '_global' || hasChanged(key);
+  };
+  var process = function process(sObservers, key) {
+    if (sObservers && sObservers.length > 0 && mustProcess(key)) {
+      (0, _forEach3.default)(sObservers, function (observer) {
+        return processObserver(observer, key === '_global' ? currentState : (0, _get3.default)(currentState, '' + stateKey + key), actionKey);
+      });
+    }
+  };
+  (0, _forEach3.default)(stateObservers, process);
 };
 
 var processMiddlewares = function processMiddlewares(status) {
-  return (0, _forEach2.default)(_middlewares, function (middleware) {
+  return (0, _forEach3.default)(middlewares, function (middleware) {
     return middleware(status);
   });
 };
@@ -7745,42 +7770,35 @@ var observe = exports.observe = function observe(stateKey, funct) {
 };
 
 var clearObservers = exports.clearObservers = function clearObservers(stateKey) {
-  return _observers[stateKey] = undefined;
-};
-
-var register = exports.register = function register(newDicts) {
-  (0, _assign2.default)(_dicts, (0, _reduce2.default)(newDicts, function (result, dict, stateKey) {
-    return (0, _set2.default)(result, stateKey, (0, _assign2.default)({}, baseDict, dict));
-  }, {}));
-  (0, _forEach2.default)((0, _keys2.default)(newDicts), initState);
+  observers[stateKey] = undefined;
 };
 
 var getActions = exports.getActions = function getActions(stateKeys) {
   var getStateActions = function getStateActions(state) {
-    return (0, _map2.default)((0, _keys2.default)(_dicts[state]), function (action) {
+    return (0, _map3.default)((0, _keys3.default)(dicts[state]), function (action) {
       return state + ':' + action;
     });
   };
-  return stateKeys ? getStateActions(stateKeys) : (0, _reduce2.default)(_dicts, function (result, _dict, state) {
+  return stateKeys ? getStateActions(stateKeys) : (0, _reduce3.default)(dicts, function (result, _dict, state) {
     return result.concat(getStateActions(state));
   }, []);
 };
 
 var addMiddleware = exports.addMiddleware = function addMiddleware(middleware) {
-  return (0, _isArray2.default)(middleware) ? _middlewares = [].concat(_middlewares, middleware) : _middlewares.push(middleware);
+  middlewares = [].concat(middlewares, middleware);
 };
 
-var processAction = function processAction(_ref) {
-  var state = _ref.state,
-      action = _ref.action,
-      prev = _ref.prev,
-      payload = _ref.payload,
-      next = _ref.next;
+var processAction = function processAction(_ref2) {
+  var state = _ref2.state,
+      action = _ref2.action,
+      prev = _ref2.prev,
+      payload = _ref2.payload,
+      next = _ref2.next;
 
-  if (!(0, _isEqual2.default)(prev, next)) {
+  if (!(0, _isEqual3.default)(prev, next)) {
     processMiddlewares({ state: state, action: action, prev: prev, payload: payload, next: (0, _cloneDeep2.default)(next) });
     (0, _store.setState)(state, next);
-    processObservers(state, (0, _cloneDeep2.default)(next), action, prev);
+    processObservers({ stateKey: state, currentState: (0, _cloneDeep2.default)(next), actionKey: action, prev: prev });
   }
 };
 
@@ -7788,14 +7806,14 @@ var dispatchAction = function dispatchAction(keyType, data) {
   var _keyType$split = keyType.split(':'),
       _keyType$split2 = _slicedToArray(_keyType$split, 2),
       state = _keyType$split2[0],
-      action = _keyType$split2[1],
-      dict = (0, _get2.default)(_dicts, state + '.' + action);
+      action = _keyType$split2[1];
 
+  var dict = (0, _get3.default)(dicts, state + '.' + action);
   if (dict) {
     try {
       (function () {
-        var prev = (0, _store.getState)(state),
-            payload = dict.map(data);
+        var prev = (0, _store.getState)(state);
+        var payload = dict.map(data);
 
         var processNext = function processNext(nextValue) {
           return nextValue && nextValue.then ? nextValue.then(processNext, dict.error) : processAction({ state: state, action: action, prev: prev, payload: payload, next: nextValue });
@@ -7809,7 +7827,7 @@ var dispatchAction = function dispatchAction(keyType, data) {
   }
 };
 var dispatch = exports.dispatch = function dispatch(keyType, data) {
-  return (0, _isArray2.default)(keyType) ? (0, _forEach2.default)(keyType, function (k) {
+  return (0, _isArray3.default)(keyType) ? (0, _forEach3.default)(keyType, function (k) {
     return dispatchAction(k, data);
   }) : dispatchAction(keyType, data);
 };
@@ -7817,18 +7835,25 @@ var dispatch = exports.dispatch = function dispatch(keyType, data) {
 var state = exports.state = _store.getState;
 
 var reset = exports.reset = function reset() {
-  _middlewares = [];
-  _dicts = {};
-  _observers = {};
+  middlewares = [];
+  dicts = {};
+  observers = {};
   (0, _store.clearStore)();
 };
 
 var initState = exports.initState = function initState(key) {
-  return key ? dispatch((0, _isArray2.default)(key) ? (0, _map2.default)(key, function (k) {
+  return key ? dispatch((0, _isArray3.default)(key) ? (0, _map3.default)(key, function (k) {
     return k + ':INIT';
-  }) : key + ':INIT') : (0, _forEach2.default)((0, _keys2.default)((0, _store.getState)()), function (k) {
+  }) : key + ':INIT') : (0, _forEach3.default)((0, _keys3.default)((0, _store.getState)()), function (k) {
     return dispatch(k + ':INIT');
   });
+};
+
+var register = exports.register = function register(newDicts) {
+  (0, _assign3.default)(dicts, (0, _reduce3.default)(newDicts, function (result, dict, stateKey) {
+    return (0, _set3.default)(result, stateKey, (0, _assign3.default)({}, baseDict, dict));
+  }, {}));
+  (0, _forEach3.default)((0, _keys3.default)(newDicts), initState);
 };
 
 /***/ })
