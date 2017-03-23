@@ -19,6 +19,8 @@ let middlewares = [];
 let dicts = {};
 let observers = {};
 
+const cleanKey = key => /\.?(.*)$/.exec(key)[1];
+
 const defaultMap = value => value;
 const defaultError = err => console.error(err);
 
@@ -60,15 +62,16 @@ const processObserver = (observer, currentState, actionKey) => new Promise((reso
 
 const processObservers = ({ stateKey, currentState, actionKey, prev }) => {
   const stateObservers = observers[stateKey];
-  const hasChanged = key => !_isEqual(_get(prev, `${stateKey}${key}`), _get(currentState, `${stateKey}${key}`));
+  const hasChanged = key => !_isEqual(_get(prev, `${key}`), _get(currentState, `${key}`));
   const mustProcess = key => key === '_global' || hasChanged(key);
   const process = (sObservers, key) => {
-    if (sObservers && sObservers.length > 0 && mustProcess(key)) {
+    const cleanedKey = cleanKey(key);
+    if (sObservers && sObservers.length > 0 && mustProcess(cleanedKey)) {
       _forEach(sObservers, observer =>
         processObserver(
           observer,
           key === '_global' ? currentState
-            : _get(currentState, `${stateKey}${key}`),
+            : _get(currentState, `${cleanedKey}`),
           actionKey));
     }
   };

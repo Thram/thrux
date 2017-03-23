@@ -66,6 +66,11 @@ var middlewares = [];
 var dicts = {};
 var observers = {};
 
+var cleanKey = function cleanKey(key) {
+  return (/\.?(.*)$/.exec(key)[1]
+  );
+};
+
 var defaultMap = function defaultMap(value) {
   return value;
 };
@@ -132,15 +137,16 @@ var processObservers = function processObservers(_ref) {
 
   var stateObservers = observers[stateKey];
   var hasChanged = function hasChanged(key) {
-    return !(0, _isEqual3.default)((0, _get3.default)(prev, '' + stateKey + key), (0, _get3.default)(currentState, '' + stateKey + key));
+    return !(0, _isEqual3.default)((0, _get3.default)(prev, '' + key), (0, _get3.default)(currentState, '' + key));
   };
   var mustProcess = function mustProcess(key) {
     return key === '_global' || hasChanged(key);
   };
   var process = function process(sObservers, key) {
-    if (sObservers && sObservers.length > 0 && mustProcess(key)) {
+    var cleanedKey = cleanKey(key);
+    if (sObservers && sObservers.length > 0 && mustProcess(cleanedKey)) {
       (0, _forEach3.default)(sObservers, function (observer) {
-        return processObserver(observer, key === '_global' ? currentState : (0, _get3.default)(currentState, '' + stateKey + key), actionKey);
+        return processObserver(observer, key === '_global' ? currentState : (0, _get3.default)(currentState, '' + cleanedKey), actionKey);
       });
     }
   };

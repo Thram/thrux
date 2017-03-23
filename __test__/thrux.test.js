@@ -179,7 +179,7 @@ test('Micro observer', (assert) => {
   reset();
   const user = { SIGN_IN: createDict(getUser) };
   register({ user });
-  observe('user.name', (actual) => {
+  observe('user.user.name', (actual) => {
     const expected = 'Thram';
     assert.deepEqual(actual, expected, 'Promise resolve correctly with micro observer');
     assert.end();
@@ -194,7 +194,7 @@ test('Micro observer dont change', (assert) => {
     SIGN_IN: createDict(() => ({ user: { name: 'Thram', lang: 'javascript' } })),
   };
   register({ user });
-  observe('user.name', () => assert.error());
+  observe('user.user.name', () => assert.error());
   dispatch('user:SIGN_IN');
   setTimeout(() => {
     assert.pass('Observe not executed');
