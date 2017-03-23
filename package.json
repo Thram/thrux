@@ -4,7 +4,7 @@
   "description": "Simple state management.",
   "main": "dist/index.js",
   "scripts": {
-    "commit": "git add . && git-cz",
+    "gitc": "git add . && git-cz",
     "tape": "tape-watch -r babel-register __test__/thrux.test.js",
     "cover": "nyc npm run test:single",
     "lint": "eslint src --ext .jsx,.js",
