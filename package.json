@@ -37,8 +37,10 @@
     "url": "https://github.com/Thram/thrux/issues"
   },
   "homepage": "https://github.com/Thram/thrux#readme",
+  "dependencies": {
+    "es6-promise": "^4.1.0"
+  },
   "peerDependencies": {
-    "es6-promise": "^4.1.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
