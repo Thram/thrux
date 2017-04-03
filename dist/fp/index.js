@@ -40,4 +40,4 @@ var reset = exports.reset = _index.reset;
 
 var initState = exports.initState = _index.initState;
 
-var register = exports.register = _index.reset;
+var register = exports.register = _index.register;

@@ -51,8 +51,6 @@ var _forEach2 = require('lodash/forEach');
 
 var _forEach3 = _interopRequireDefault(_forEach2);
 
-var _es6Promise = require('es6-promise');
-
 var _store = require('./store');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -123,7 +121,7 @@ var removeObserver = exports.removeObserver = function removeObserver(stateKey, 
 };
 
 var processObserver = function processObserver(observer, currentState, actionKey) {
-  return new _es6Promise.Promise(function (resolve) {
+  return new Promise(function (resolve) {
     observer(currentState, actionKey);
     resolve();
   });
@@ -205,16 +203,14 @@ var dispatchAction = function dispatchAction(keyType, data) {
   var dict = (0, _get3.default)(dicts, state + '.' + action);
   if (dict) {
     try {
-      (function () {
-        var prev = (0, _store.getState)(state);
-        var payload = dict.map(data);
+      var prev = (0, _store.getState)(state);
+      var payload = dict.map(data);
 
-        var processNext = function processNext(nextValue) {
-          return nextValue && nextValue.then ? nextValue.then(processNext, dict.error) : processAction({ state: state, action: action, prev: prev, payload: payload, next: nextValue });
-        };
+      var processNext = function processNext(nextValue) {
+        return nextValue && nextValue.then ? nextValue.then(processNext, dict.error) : processAction({ state: state, action: action, prev: prev, payload: payload, next: nextValue });
+      };
 
-        processNext(dict.dispatcher(payload, (0, _cloneDeep2.default)(prev)));
-      })();
+      processNext(dict.dispatcher(payload, (0, _cloneDeep2.default)(prev)));
     } catch (e) {
       dict.error(e);
     }

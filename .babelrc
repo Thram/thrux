@@ -1,6 +1,17 @@
 {
   "presets": [
-    "es2015"
+    "es2015",
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 4 versions",
+            "safari >= 7"
+          ]
+        }
+      }
+    ]
   ],
   "env": {
     "test": {

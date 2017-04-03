@@ -12,7 +12,6 @@ import _assign from 'lodash/assign';
 import _isEqual from 'lodash/isEqual';
 import _isArray from 'lodash/isArray';
 import _forEach from 'lodash/forEach';
-import { Promise } from 'es6-promise';
 import { getState, setState, clearStore } from './store';
 
 let middlewares = [];
