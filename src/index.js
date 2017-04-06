@@ -12,8 +12,9 @@ import _assign from 'lodash/assign';
 import _isEqual from 'lodash/isEqual';
 import _isArray from 'lodash/isArray';
 import _forEach from 'lodash/forEach';
-import { getState, setState, clearStore } from './store';
+import { getState, setState, clearStore, initStore } from './store';
 
+let initValues = { middlewares: [], dicts: {}, observers: {}, store: {} };
 let middlewares = [];
 let dicts = {};
 let observers = {};
@@ -38,9 +39,9 @@ const addObserver = (stateKey, funct) => {
   const key = rest.length > 0 ? rest.join('') : '_global';
 
   observers[mainState][key] = _reduce(
-    [funct],
-    (result, value) => [].concat(result, [value]),
-    observers[mainState][key] || [],
+      [funct],
+      (result, value) => [].concat(result, [value]),
+      observers[mainState][key] || [],
   );
 };
 
@@ -67,11 +68,11 @@ const processObservers = ({ stateKey, currentState, actionKey, prev }) => {
     const cleanedKey = cleanKey(key);
     if (sObservers && sObservers.length > 0 && mustProcess(cleanedKey)) {
       _forEach(sObservers, observer =>
-        processObserver(
-          observer,
-          key === '_global' ? currentState
-            : _get(currentState, `${cleanedKey}`),
-          actionKey));
+          processObserver(
+              observer,
+              key === '_global' ? currentState
+                  : _get(currentState, `${cleanedKey}`),
+              actionKey));
     }
   };
   _forEach(stateObservers, process);
@@ -88,8 +89,8 @@ export const clearObservers = (stateKey) => {
 export const getActions = (stateKeys) => {
   const getStateActions = state => _map(_keys(dicts[state]), action => `${state}:${action}`);
   return stateKeys ?
-    getStateActions(stateKeys)
-    : _reduce(dicts, (result, _dict, state) => result.concat(getStateActions(state)), []);
+      getStateActions(stateKeys)
+      : _reduce(dicts, (result, _dict, state) => result.concat(getStateActions(state)), []);
 };
 
 export const addMiddleware = (middleware) => {
@@ -113,8 +114,8 @@ const dispatchAction = (keyType, data) => {
       const payload = dict.map(data);
 
       const processNext = nextValue => (nextValue && nextValue.then ?
-        nextValue.then(processNext, dict.error)
-        : processAction({ state, action, prev, payload, next: nextValue }));
+          nextValue.then(processNext, dict.error)
+          : processAction({ state, action, prev, payload, next: nextValue }));
 
       processNext(dict.dispatcher(payload, _clone(prev)));
     } catch (e) {
@@ -122,25 +123,39 @@ const dispatchAction = (keyType, data) => {
     }
   }
 };
+
 export const dispatch = (keyType, data) => (_isArray(keyType) ?
-  _forEach(keyType, k => dispatchAction(k, data))
-  : dispatchAction(keyType, data));
+    _forEach(keyType, k => dispatchAction(k, data))
+    : dispatchAction(keyType, data));
 
 export const state = getState;
 
 export const reset = () => {
-  middlewares = [];
-  dicts = {};
-  observers = {};
-  clearStore();
+  const initial = _clone(initValues);
+  middlewares = initial.middlewares;
+  dicts = initial.dicts;
+  observers = initial.observers;
+  initStore(initial.store);
 };
 
+export const init = (options = { middlewares: [], dicts: {}, observers: {}, store: {} }) => {
+  initValues = {
+    middlewares: options.middlewares || [],
+    dicts: options.dicts || {},
+    observers: options.observers || {},
+    store: options.store || {},
+  };
+  reset();
+};
+
+export const clear = () => clearStore();
+
 export const initState = key => (key ?
-  dispatch(_isArray(key) ? _map(key, k => `${k}:INIT`) : `${key}:INIT`)
-  : _forEach(_keys(getState()), k => dispatch(`${k}:INIT`)));
+    dispatch(_isArray(key) ? _map(key, k => `${k}:INIT`) : `${key}:INIT`)
+    : _forEach(_keys(getState()), k => dispatch(`${k}:INIT`)));
 
 export const register = (newDicts) => {
   _assign(dicts, _reduce(newDicts, (result, dict, stateKey) =>
-    _set(result, stateKey, _assign({}, baseDict, dict)), {}));
+      _set(result, stateKey, _assign({}, baseDict, dict)), {}));
   _forEach(_keys(newDicts), initState);
 };

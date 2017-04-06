@@ -14,6 +14,8 @@ import {
   removeObserver,
   clearObservers,
   reset,
+  init,
+  clear
 } from '../src';
 import { createAPI, createAPIError } from './mock.api';
 
@@ -30,6 +32,44 @@ test('Create dictionary', (assert) => {
   const actual = { dispatcher, map, error };
 
   assert.deepEqual(expected, actual, 'Dictionary created');
+  assert.end();
+});
+
+test('Initialize store', (assert) => {
+  init({ store: { test: 0 } });
+  const expected = 0;
+  const actual = state('test');
+  assert.equal(actual, expected, 'Initialization successful');
+  assert.end();
+});
+
+test('Initialize middleware ', (assert) => {
+  const check = (actual) => {
+      const expected = { action: 'INIT', next: 0, payload: undefined, prev: undefined, state: 'counter' };
+      assert.deepEqual(actual, expected, `Middlewares correctly processed`);
+      assert.end();
+  };
+  init({ middlewares: [check] });
+  const counter = {
+    INIT: createDict(() => 0)
+  };
+  register({ counter });
+});
+
+test('Initialize empty ', (assert) => {
+  init();
+  const expected = {};
+  const actual = state();
+  assert.deepEqual(actual, expected, 'Initialization successful');
+  assert.end();
+});
+
+test('Clear', (assert) => {
+  init({ store: { test: 0 } });
+  clear();
+  const expected = undefined;
+  const actual = state('test');
+  assert.equal(actual, expected, 'Initialization successful');
   assert.end();
 });
 
@@ -69,7 +109,7 @@ test("Get user state's actions", (assert) => {
 
 test('Reset store', (assert) => {
   reset();
-  const expected = {};
+  const expected = { test: 0 }; // Init Values
   const actual = state();
   assert.deepEqual(actual, expected, 'Store reset');
   assert.end();
@@ -221,12 +261,12 @@ test('Dispatch an action that fails and catch the error', (assert) => {
   const counter = {
     INIT: createDict(() => 0),
     INCREASE: createDict(
-      (payload, stateValue) => stateValue + 1,
-      ({ value }) => value, (actual) => {
-        const expected = "Cannot read property 'value' of undefined";
-        assert.equal(actual.message, expected, 'Action failed');
-        assert.end();
-      }),
+        (payload, stateValue) => stateValue + 1,
+        ({ value }) => value, (actual) => {
+          const expected = "Cannot read property 'value' of undefined";
+          assert.equal(actual.message, expected, 'Action failed');
+          assert.end();
+        }),
   };
   register({ counter });
   dispatch('counter:INCREASE');
@@ -386,7 +426,7 @@ test('Clear multiple states observers', (assert) => {
 });
 
 test('Add middlewares', (assert) => {
-  reset();
+  init();
   const counter = {
     INIT: createDict(() => 0),
     INCREASE: createDict((payload, stateValue) => stateValue + 1),

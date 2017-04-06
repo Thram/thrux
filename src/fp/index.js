@@ -12,6 +12,8 @@ import {
   dispatch as d,
   state as s,
   reset as r,
+  init as i,
+  clear as c,
   initState as iS,
 } from '../index';
 
@@ -33,6 +35,10 @@ export const dispatch = keyType => data => d(keyType, data);
 export const state = s;
 
 export const reset = r;
+
+export const init = i;
+
+export const clear = c;
 
 export const initState = iS;
 

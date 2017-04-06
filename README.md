@@ -25,12 +25,12 @@ or with yarn
 #### Dictionaries
 
 ```javascript
-import {register} from 'thrux';
+import { register } from 'thrux';
 
 const state = {
     dispatcher: (payload, state)=> console.log('New State', payload), 
-    map: (rawValue) => rawValue.data, 
-    error: (err)=> console.err('An error happened', err)
+    map: rawValue => rawValue.data, 
+    error: err => console.err('An error happened', err)
 };
 
 register({state});
@@ -47,16 +47,26 @@ map | Function | *(optional)* A map function to sanitize the value handle by the
 error | Function | *(optional)* Error handler.
 
 ```javascript
-import {createDict} from 'thrux';
+import { createDict } from 'thrux';
+
+const postJson = data => ({
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data),
+});
 
 const counter = {
   INCREASE: createDict((payload, state) => state + 1),
-  DECREASE: createDict((payload, state) => state - 1)
+  DECREASE: createDict((payload, state) => state - 1),
 }
 
 const user = {
-  SIGN_IN: createDict(({username, pass}) => fetch('./sign_in_url', {username, pass}), (user) => {username: user.name, pass: user.password})
-}
+  SIGN_IN: createDict(({ username, pass }) =>
+      fetch('./sign_in_url', postJson({ username, pass }))
+          .then(user => ({ username: user.name, pass: user.password }))),
+};
 ```
 
 ##### *Initialization*
@@ -64,14 +74,28 @@ const user = {
 You can define an INIT action with a function that sets the initial value of your state after register
 
 ```javascript
-import {createDict} from 'thrux';
+import { createDict } from 'thrux';
 
 const counter = {
   INIT    : createDict(() => 1),
   INCREASE: createDict((payload, state) => state + 1),
-  DECREASE: createDict((payload, state) => state - 1)
+  DECREASE: createDict((payload, state) => state - 1),
 }
-``` 
+```
+ 
+#### init()
+ 
+Initialize Thrux store.
+
+Param | Type | Description
+----- | ---- | -----------
+options | Object | Initialize any module: `{ middlewares: [], dicts: {}, observers: {}, store: {} }`
+ 
+```javascript
+import { init } from 'thrux';
+ 
+init({ store: { test: 0 } });
+```
 
 #### initState(key)
 
@@ -82,7 +106,7 @@ Param | Type | Description
 key | String *or* [Array of Strings] | *(optional)* State(s) that want to initialize
 
 ```javascript
-import {initState} from 'thrux';
+import { initState } from 'thrux';
 
 initState('counter');
 initState(['counter', 'user']);
@@ -97,9 +121,9 @@ Param | Type | Description
 dictionaries | Object | List of states and their respective dictionaries
 
 ```javascript
-import {register} from 'thrux';
+import { register } from 'thrux';
 
-register({counter, user});
+register({ counter, user });
 ```
 
 #### dispatch(stateAction, data)
@@ -112,13 +136,13 @@ stateAction | String *or* [Array of Strings] | String(s) that represents the sta
 data | Any | *(optional)* Whatever data your dispatcher function is prepared to handle
 
 ```javascript
-import {dispatch} from 'thrux';
+import { dispatch } from 'thrux';
 
 dispatch('counter:INCREASE');
 
 dispatch(['counter:INCREASE', 'counter2:INCREASE']);
 
-dispatch('user:SIGN_IN', {user:'Thram', pass:'password'});
+dispatch('user:SIGN_IN', { user:'Thram', pass:'password' });
 ```
 
 #### state(stateKey)
@@ -132,7 +156,7 @@ Param | Type | Description
 stateKey | String *or* [Array of Strings] | *(optional)* String(s) that represents the state(s)
 
 ```javascript
-import {state} from 'thrux';
+import { state } from 'thrux';
 
 const allStates = state();
 
@@ -151,18 +175,18 @@ stateKey | String | String that represents the state
 listener | Function | Function that gets trigger when the state changes
 
 ```javascript
-import {observe} from 'thrux';
+import { observe } from 'thrux';
 
-observe('user', (state, actionKey)=> console.log(actionKey, state.profile));
+observe('user', (state, actionKey) => console.log(actionKey, state.profile));
 ```
 ##### *Micro Observer*
 You can observe specific parts of the state for changes
 
 ```javascript
-import {observe} from 'thrux';
+import { observe } from 'thrux';
 
-observe('user.profile', (profile, actionKey)=> console.log(actionKey, profile));
-observe('user.profile.name', (name, actionKey)=> console.log(actionKey, name));
+observe('user.profile', (profile, actionKey) => console.log(actionKey, profile));
+observe('user.profile.name', (name, actionKey) => console.log(actionKey, name));
 ```
 
 #### removeObserver(stateKey, listener)
@@ -175,7 +199,7 @@ stateKey | String | String that represents the state
 listener | Function | Function that gets trigger when the state changes
 
 ```javascript
-import {observe, removeObserver} from 'thrux';
+import { observe, removeObserver } from 'thrux';
 
 const logProfile = (auth) => console.log(auth.profile);
 
@@ -193,7 +217,7 @@ Param | Type | Description
 stateKey | String *or* [Array of Strings] | String that represents the state
 
 ```javascript
-import {clearObservers} from 'thrux';
+import { clearObservers } from 'thrux';
 
 clearObservers('user');
 clearObservers(['counter1', 'counter2']);
@@ -208,11 +232,11 @@ Param | Type | Description
 middleware | Function *or* [Array of Functions] | Function(s) that trigger when the state changes with the following params: {state, action, prev, payload, next}
 
 ```javascript
-import {addMiddleware} from 'thrux';
+import { addMiddleware } from 'thrux';
 
 // Add logger
-addMiddleware(({state, action, prev, payload, next}) => console.log({state, action, prev, payload, next}));
-addMiddleware([({prev}) => console.log('prev', prev), ({next}) => console.log('next', next)]);
+addMiddleware(({ state, action, prev, payload, next }) => console.log({ state, action, prev, payload, next }));
+addMiddleware([({ prev }) => console.log('prev', prev), ({ next }) => console.log('next', next)]);
 ```
 
 #### getActions(stateKeys)
@@ -224,20 +248,33 @@ Param | Type | Description
 stateKey | String *or* [Array of Strings] | *(optional)* String(s) that represents the state(s)
 
 ```javascript
-import {getActions} from 'thrux';
+import { getActions } from 'thrux';
 
 const actions = getActions('user'); // ['user:INIT', 'user:SIGN_IN']
 ```
 
-#### reset()
+#### Clear()
 
-Reset Thrux store.
+Clear Thrux store.
 
 ```javascript
-import {reset} from 'thrux';
-
-reset();
+import { clear } from 'thrux';
+ 
+init({ store: { test: 0 } }); // { test:0 }
+clear(); // { }
 ```
+#### reset()
+
+Reset Thrux all your modules to your initial values.
+
+```javascript
+import { init, register, reset } from 'thrux';
+ 
+init({ store: { test: 0 } }); // { test:0 }
+register({ counter }); // { test:0, counter: 0 }
+reset(); // { test:0 }
+```
+
 
 ## Examples
 

@@ -7,9 +7,11 @@ import _clone from 'lodash/cloneDeep';
 
 let store = {};
 
-export const clearStore = () => {
-  store = {};
+export const initStore = (initialValues = {}) => {
+  store = initialValues;
 };
+
+export const clearStore = () => initStore();
 
 const pickState = key => (_isArray(key) ? _pick(store, key) : store[key]);
 
