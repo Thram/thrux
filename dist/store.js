@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.setState = exports.getState = exports.clearStore = undefined;
+exports.setState = exports.getState = exports.clearStore = exports.initStore = undefined;
 
 var _pick2 = require('lodash/pick');
 
@@ -22,8 +22,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var store = {}; /**
                  * Created by thram on 16/01/17.
                  */
+var initStore = exports.initStore = function initStore() {
+  var initialValues = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  store = initialValues;
+};
+
 var clearStore = exports.clearStore = function clearStore() {
-  store = {};
+  return initStore();
 };
 
 var pickState = function pickState(key) {

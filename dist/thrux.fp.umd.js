@@ -16,9 +16,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -2205,7 +2205,7 @@ module.exports = stubArray;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.register = exports.initState = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.getActions = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
+exports.register = exports.initState = exports.clear = exports.init = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.getActions = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
@@ -2262,6 +2262,7 @@ function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); } /*
                                                                                */
 
 
+var initValues = { middlewares: [], dicts: {}, observers: {}, store: {} };
 var middlewares = [];
 var dicts = {};
 var observers = {};
@@ -2418,6 +2419,7 @@ var dispatchAction = function dispatchAction(keyType, data) {
     }
   }
 };
+
 var dispatch = exports.dispatch = function dispatch(keyType, data) {
   return (0, _isArray3.default)(keyType) ? (0, _forEach3.default)(keyType, function (k) {
     return dispatchAction(k, data);
@@ -2427,10 +2429,27 @@ var dispatch = exports.dispatch = function dispatch(keyType, data) {
 var state = exports.state = _store.getState;
 
 var reset = exports.reset = function reset() {
-  middlewares = [];
-  dicts = {};
-  observers = {};
-  (0, _store.clearStore)();
+  var initial = (0, _cloneDeep2.default)(initValues);
+  middlewares = initial.middlewares;
+  dicts = initial.dicts;
+  observers = initial.observers;
+  (0, _store.initStore)(initial.store);
+};
+
+var init = exports.init = function init() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { middlewares: [], dicts: {}, observers: {}, store: {} };
+
+  initValues = {
+    middlewares: options.middlewares || [],
+    dicts: options.dicts || {},
+    observers: options.observers || {},
+    store: options.store || {}
+  };
+  reset();
+};
+
+var clear = exports.clear = function clear() {
+  return (0, _store.clearStore)();
 };
 
 var initState = exports.initState = function initState(key) {
@@ -2458,7 +2477,7 @@ var register = exports.register = function register(newDicts) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.setState = exports.getState = exports.clearStore = undefined;
+exports.setState = exports.getState = exports.clearStore = exports.initStore = undefined;
 
 var _pick2 = __webpack_require__(183);
 
@@ -2477,8 +2496,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var store = {}; /**
                  * Created by thram on 16/01/17.
                  */
+var initStore = exports.initStore = function initStore() {
+  var initialValues = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  store = initialValues;
+};
+
 var clearStore = exports.clearStore = function clearStore() {
-  store = {};
+  return initStore();
 };
 
 var pickState = function pickState(key) {
@@ -6511,7 +6536,7 @@ module.exports = g;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.register = exports.initState = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.getActions = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
+exports.register = exports.initState = exports.clear = exports.init = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.getActions = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
 
 var _index = __webpack_require__(67);
 
@@ -6545,6 +6570,10 @@ var dispatch = exports.dispatch = function dispatch(keyType) {
 var state = exports.state = _index.state;
 
 var reset = exports.reset = _index.reset;
+
+var init = exports.init = _index.init;
+
+var clear = exports.clear = _index.clear;
 
 var initState = exports.initState = _index.initState;
 

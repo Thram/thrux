@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.register = exports.initState = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.getActions = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
+exports.register = exports.initState = exports.clear = exports.init = exports.reset = exports.state = exports.dispatch = exports.addMiddleware = exports.getActions = exports.clearObservers = exports.observe = exports.removeObserver = exports.createDict = undefined;
 
 var _index = require('../index');
 
@@ -37,6 +37,10 @@ var dispatch = exports.dispatch = function dispatch(keyType) {
 var state = exports.state = _index.state;
 
 var reset = exports.reset = _index.reset;
+
+var init = exports.init = _index.init;
+
+var clear = exports.clear = _index.clear;
 
 var initState = exports.initState = _index.initState;
 
