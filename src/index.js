@@ -24,7 +24,11 @@ const cleanKey = key => /\.?(.*)$/.exec(key)[1];
 const defaultMap = value => value;
 const defaultError = err => console.error(err);
 
-export const createDict = (dispatcher, map = defaultMap, error = defaultError) => ({
+export const createDict = (
+  dispatcher,
+  map = defaultMap,
+  error = defaultError,
+) => ({
   dispatcher,
   map,
   error,
@@ -39,9 +43,9 @@ const addObserver = (stateKey, funct) => {
   const key = rest.length > 0 ? rest.join('') : '_global';
 
   observers[mainState][key] = _reduce(
-      [funct],
-      (result, value) => [].concat(result, [value]),
-      observers[mainState][key] || [],
+    [funct],
+    (result, value) => [].concat(result, [value]),
+    observers[mainState][key] || [],
   );
 };
 
@@ -55,30 +59,36 @@ export const removeObserver = (stateKey, funct) => {
   }
 };
 
-const processObserver = (observer, currentState, actionKey) => new Promise((resolve) => {
-  observer(currentState, actionKey);
-  resolve();
-});
+const processObserver = (observer, currentState, actionKey) =>
+  new Promise((resolve) => {
+    observer(currentState, actionKey);
+    resolve();
+  });
 
 const processObservers = ({ stateKey, currentState, actionKey, prev }) => {
   const stateObservers = observers[stateKey];
-  const hasChanged = key => !_isEqual(_get(prev, `${key}`), _get(currentState, `${key}`));
+  const hasChanged = key =>
+    !_isEqual(_get(prev, `${key}`), _get(currentState, `${key}`));
   const mustProcess = key => key === '_global' || hasChanged(key);
   const process = (sObservers, key) => {
     const cleanedKey = cleanKey(key);
     if (sObservers && sObservers.length > 0 && mustProcess(cleanedKey)) {
       _forEach(sObservers, observer =>
-          processObserver(
-              observer,
-              key === '_global' ? currentState
-                  : _get(currentState, `${cleanedKey}`),
-              actionKey));
+        processObserver(
+          observer,
+          key === '_global'
+            ? currentState
+            : _get(currentState, `${cleanedKey}`),
+          actionKey,
+        ),
+      );
     }
   };
   _forEach(stateObservers, process);
 };
 
-const processMiddlewares = status => _forEach(middlewares, middleware => middleware(status));
+const processMiddlewares = status =>
+  _forEach(middlewares, middleware => middleware(status));
 
 export const observe = (stateKey, funct) => addObserver(stateKey, funct);
 
@@ -87,10 +97,15 @@ export const clearObservers = (stateKey) => {
 };
 
 export const getActions = (stateKeys) => {
-  const getStateActions = state => _map(_keys(dicts[state]), action => `${state}:${action}`);
-  return stateKeys ?
-      getStateActions(stateKeys)
-      : _reduce(dicts, (result, _dict, state) => result.concat(getStateActions(state)), []);
+  const getStateActions = state =>
+    _map(_keys(dicts[state]), action => `${state}:${action}`);
+  return stateKeys
+    ? getStateActions(stateKeys)
+    : _reduce(
+        dicts,
+        (result, _dict, state) => result.concat(getStateActions(state)),
+        [],
+      );
 };
 
 export const addMiddleware = (middleware) => {
@@ -101,7 +116,12 @@ const processAction = ({ state, action, prev, payload, next }) => {
   if (!_isEqual(prev, next)) {
     processMiddlewares({ state, action, prev, payload, next: _clone(next) });
     setState(state, next);
-    processObservers({ stateKey: state, currentState: _clone(next), actionKey: action, prev });
+    processObservers({
+      stateKey: state,
+      currentState: _clone(next),
+      actionKey: action,
+      prev,
+    });
   }
 };
 
@@ -113,8 +133,9 @@ const dispatchAction = (keyType, data) => {
       const prev = getState(state);
       const payload = dict.map(data);
 
-      const processNext = nextValue => (nextValue && nextValue.then ?
-          nextValue.then(processNext, dict.error)
+      const processNext = nextValue =>
+        (nextValue && nextValue.then
+          ? nextValue.then(processNext, dict.error)
           : processAction({ state, action, prev, payload, next: nextValue }));
 
       processNext(dict.dispatcher(payload, _clone(prev)));
@@ -124,8 +145,9 @@ const dispatchAction = (keyType, data) => {
   }
 };
 
-export const dispatch = (keyType, data) => (_isArray(keyType) ?
-    _forEach(keyType, k => dispatchAction(k, data))
+export const dispatch = (keyType, data) =>
+  (_isArray(keyType)
+    ? _forEach(keyType, k => dispatchAction(k, data))
     : dispatchAction(keyType, data));
 
 export const state = getState;
@@ -138,7 +160,9 @@ export const reset = () => {
   initStore(initial.store);
 };
 
-export const init = (options = { middlewares: [], dicts: {}, observers: {}, store: {} }) => {
+export const init = (
+  options = { middlewares: [], dicts: {}, observers: {}, store: {} },
+) => {
   initValues = {
     middlewares: options.middlewares || [],
     dicts: options.dicts || {},
@@ -150,12 +174,20 @@ export const init = (options = { middlewares: [], dicts: {}, observers: {}, stor
 
 export const clear = () => clearStore();
 
-export const initState = key => (key ?
-    dispatch(_isArray(key) ? _map(key, k => `${k}:INIT`) : `${key}:INIT`)
+export const initState = key =>
+  (key
+    ? dispatch(_isArray(key) ? _map(key, k => `${k}:INIT`) : `${key}:INIT`)
     : _forEach(_keys(getState()), k => dispatch(`${k}:INIT`)));
 
 export const register = (newDicts) => {
-  _assign(dicts, _reduce(newDicts, (result, dict, stateKey) =>
-      _set(result, stateKey, _assign({}, baseDict, dict)), {}));
+  _assign(
+    dicts,
+    _reduce(
+      newDicts,
+      (result, dict, stateKey) =>
+        _set(result, stateKey, _assign({}, baseDict, dict)),
+      {},
+    ),
+  );
   _forEach(_keys(newDicts), initState);
 };

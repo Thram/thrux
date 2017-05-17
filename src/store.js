@@ -7,16 +7,19 @@ import _clone from 'lodash/cloneDeep';
 
 let store = {};
 
-export const initStore = (initialValues = {}) => {
+const initStore = (initialValues = {}) => {
   store = initialValues;
 };
 
-export const clearStore = () => initStore();
+const clearStore = () => initStore();
 
 const pickState = key => (_isArray(key) ? _pick(store, key) : store[key]);
 
-export const getState = key => (_clone(key ? pickState(key) : store));
+const getState = key => _clone(key ? pickState(key) : store);
 
-export const setState = (key, value) => {
+const setState = (key, value) => {
   store[key] = value;
 };
+
+export { setState, getState, clearStore, initStore };
+export default { setState, getState, clearStore, initStore };

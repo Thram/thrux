@@ -2,44 +2,54 @@
  * Created by thram on 16/01/17.
  */
 import {
-  createDict as cD,
-  register as reg,
-  removeObserver as rO,
-  observe as o,
-  clearObservers as cO,
-  getActions as gA,
-  addMiddleware as aM,
-  dispatch as d,
-  state as s,
-  reset as r,
-  init as i,
-  clear as c,
-  initState as iS,
+  createDict,
+  register,
+  removeObserver as _removeObserver,
+  observe as _observe,
+  clearObservers,
+  getActions,
+  addMiddleware,
+  dispatch as _dispatch,
+  state,
+  reset,
+  init,
+  clear,
+  initState,
 } from '../index';
 
+const removeObserver = stateKey => funct => _removeObserver(stateKey, funct);
 
-export const createDict = cD;
+const observe = stateKey => funct => _observe(stateKey, funct);
 
-export const removeObserver = stateKey => funct => rO(stateKey, funct);
+const dispatch = keyType => data => _dispatch(keyType, data);
 
-export const observe = stateKey => funct => o(stateKey, funct);
-
-export const clearObservers = cO;
-
-export const getActions = gA;
-
-export const addMiddleware = aM;
-
-export const dispatch = keyType => data => d(keyType, data);
-
-export const state = s;
-
-export const reset = r;
-
-export const init = i;
-
-export const clear = c;
-
-export const initState = iS;
-
-export const register = reg;
+export {
+  createDict,
+  register,
+  removeObserver,
+  observe,
+  clearObservers,
+  getActions,
+  addMiddleware,
+  dispatch,
+  state,
+  reset,
+  init,
+  clear,
+  initState,
+};
+export default {
+  createDict,
+  register,
+  removeObserver,
+  observe,
+  clearObservers,
+  getActions,
+  addMiddleware,
+  dispatch,
+  state,
+  reset,
+  init,
+  clear,
+  initState,
+};
