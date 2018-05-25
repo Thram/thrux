@@ -5,7 +5,7 @@
 [![Codecov coverage](https://img.shields.io/codecov/c/gh/Thram/thrux.svg?style=flat-square)](https://codecov.io/gh/Thram/thrux)
 [![version](https://img.shields.io/npm/v/thrux.svg?style=flat-square)](https://www.npmjs.com/package/thrux)
 [![downloads](https://img.shields.io/npm/dt/thrux.svg?style=flat-square)](https://www.npmjs.com/package/thrux)
-[![MIT License](https://img.shields.io/npm/l/thrux.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![MIT License](https://img.shields.io/npm/l/thrux.svg?style=flat-square)](https://opensource.org/licenses/MIT) [![Greenkeeper badge](https://badges.greenkeeper.io/Thram/thrux.svg)](https://greenkeeper.io/)
 
 Simple state management inspired on Redux.
 
